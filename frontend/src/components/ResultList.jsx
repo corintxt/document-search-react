@@ -13,18 +13,30 @@ const ResultList = ({ results, query, showSummary }) => {
     const maxDate = new Date(Math.max(...dates)).toISOString().split('T')[0];
 
     const handleExport = () => {
+        // Escape CSV values properly
+        const escapeCsvValue = (val) => {
+            if (val == null) return '';
+            const str = String(val);
+            // If value contains comma, quote, or newline, wrap in quotes and escape quotes
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return `"${str.replace(/"/g, '""')}"`;
+            }
+            return str;
+        };
+
         const headers = Object.keys(results[0]).join(',');
         const csv = [
             headers,
-            ...results.map(row => Object.values(row).map(val => `"${val}"`).join(','))
+            ...results.map(row => Object.values(row).map(escapeCsvValue).join(','))
         ].join('\n');
 
-        const blob = new Blob([csv], { type: 'text/csv' });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `email_search_${new Date().toISOString()}.csv`;
+        a.download = `email_search_${new Date().toISOString().split('T')[0]}.csv`;
         a.click();
+        window.URL.revokeObjectURL(url);
     };
 
     return (

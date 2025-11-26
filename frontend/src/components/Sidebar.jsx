@@ -133,10 +133,6 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
                 </label>
             </div>
 
-            <h3>Export</h3>
-            <button className="export-btn" onClick={() => window.alert("Export functionality to be implemented in ResultList")}>
-                📥 Export Results to CSV
-            </button>
         </div>
     );
 };
