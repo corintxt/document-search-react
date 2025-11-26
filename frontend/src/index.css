@@ -1,0 +1,266 @@
+:root {
+  --primary-color: #ff4b4b;
+  --text-color: #31333F;
+  --bg-color: #ffffff;
+  --sidebar-bg: #f0f2f6;
+  --border-color: #ddd;
+}
+
+body {
+  margin: 0;
+  font-family: "Source Sans Pro", sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 300px;
+  background-color: var(--sidebar-bg);
+  padding: 2rem 1rem;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.sidebar h2, .sidebar h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+  color: rgb(49, 51, 63);
+}
+
+.filter-group {
+  margin-bottom: 1rem;
+}
+
+.filter-group label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.filter-group input[type="text"],
+.filter-group select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.date-inputs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.date-inputs input {
+  width: 100%;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 2rem 4rem;
+  max-width: 1200px;
+}
+
+.app-header {
+  margin-bottom: 2rem;
+}
+
+.dataset-info {
+  font-family: monospace;
+  background: #f0f2f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+/* Search Bar */
+.search-bar-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.search-input-wrapper {
+  flex: 1;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+}
+
+.search-button {
+  padding: 0 2rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  opacity: 0.9;
+}
+
+.search-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Results */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-box {
+  background: white;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.stat-value-small {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.result-card {
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #f9f9f9;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.result-subject h5 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.result-meta {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+}
+
+.category-badge {
+  background-color: #e8f4f8;
+  color: #0066cc;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.result-footer {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.view-full-btn {
+  background: none;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.full-body {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 0.25rem;
+}
+
+.export-btn-main {
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+/* Login */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--bg-color);
+}
+
+.login-box {
+  width: 400px;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.login-input {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+}
+
+.error-message {
+  color: red;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: #ffe6e6;
+  border-radius: 0.25rem;
+}
