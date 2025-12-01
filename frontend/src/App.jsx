@@ -64,7 +64,7 @@ function App() {
 
       <div className="main-content">
         <header className="app-header">
-          <h1>Email Search Tool</h1>
+          <h1>Email Search Tool • AFP-DDV</h1>
           {datasetInfo && (
             <div className="dataset-info">
               Target dataset: <code>{datasetInfo.dataset}.{datasetInfo.table}</code>

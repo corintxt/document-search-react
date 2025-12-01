@@ -1,5 +1,56 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+/* Prevent long unbroken words from expanding page width */
+.app-container,
+.main-content,
+.result-list,
+.result-card,
+.result-body,
+.body-content {
+  overflow-wrap: anywhere; /* modern, wraps very long tokens */
+  word-break: break-word;  /* fallback for older browsers */
+}
+
+/* Constrain overall layout width and center content */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Ensure result cards don't cause horizontal scroll */
+.result-card {
+  max-width: 100%;
+}
+
+/* Body content should wrap and not overflow */
+.body-content {
+  white-space: normal;
+}
+
+/* Styles for Export to CSV button */
+.export-btn-main {
+  background-color: #cfe8ff; /* light blue */
+  color: #0b3d91;
+  border: 1px solid #9fd0ff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.export-btn-main:hover {
+  background-color: #badaff;
+}
+
+/* Styles for category tags */
+.category-badge {
+  background-color: #fff3b0; /* soft yellow */
+  color: #5c4b00;
+  border: 1px solid blue;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
 :root {
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
@@ -394,8 +445,9 @@ body {
 
 .category-badge {
   display: inline-block;
-  background-color: var(--text-primary);
-  color: var(--bg-primary);
+  background-color: #fff3b0; /* soft yellow */
+  color: #5c4b00;
+  border: 1px solid #ffe380;
   padding: 0.375rem 0.75rem;
   border-radius: 0;
   font-size: 0.6875rem;
@@ -467,12 +519,12 @@ body {
 .export-btn-main {
   margin-bottom: 1.5rem;
   padding: 0.625rem 1.25rem;
-  background: var(--text-primary);
-  border: none;
+  background-color: #cfe8ff; /* light blue */
+  color: #0b3d91;
+  border: 1px solid #9fd0ff;
   border-radius: 0;
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--bg-primary);
   cursor: pointer;
   transition: all 0.15s ease;
   text-transform: uppercase;
@@ -480,7 +532,7 @@ body {
 }
 
 .export-btn-main:hover {
-  background: var(--border-strong);
+  background-color: #badaff;
 }
 
 .loading-spinner {
