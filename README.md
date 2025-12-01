@@ -146,3 +146,14 @@ For production deployment, use one of these approaches:
 - **No Results**: Ensure the `TABLE` configuration points to a valid BigQuery table with columns: `id`, `Subject`, `Body`, `From`, `To`, `Date_Sent`, `filename`
 - **Authentication Failed**: Verify your service account has BigQuery Data Viewer permissions
 - **CORS Errors**: Update `allow_origins` in `backend/main.py` to include your frontend URL
+
+## Railway Deployment
+
+For detailed instructions on deploying this application to Railway, see [RAILWAY_DEPLOYMENT.md](RAILWAY_DEPLOYMENT.md).
+
+**Quick Overview:**
+1. Deploy backend service with BigQuery credentials
+2. Deploy frontend service with backend URL
+3. Update CORS settings with frontend URL
+
+Railway provides a free tier with $5/month of usage included.

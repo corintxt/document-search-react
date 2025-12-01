@@ -17,9 +17,13 @@ load_dotenv()
 app = FastAPI(title="Email Search API")
 
 # CORS configuration
+# Get allowed origins from environment variable, default to wildcard for development
+FRONTEND_URL = os.getenv("FRONTEND_URL", "*")
+allowed_origins = [FRONTEND_URL] if FRONTEND_URL != "*" else ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origin
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,14 +50,24 @@ APP_PASSWORD = os.getenv("APP_PASSWORD") or secrets.get("APP_PASSWORD", "passwor
 # Initialize BigQuery client
 def get_bigquery_client():
     try:
-        # Try to use service account from secrets if available
+        # Priority 1: Try to use service account from secrets.toml
         if "gcp_service_account" in secrets:
             credentials = service_account.Credentials.from_service_account_info(
                 secrets["gcp_service_account"]
             )
             return bigquery.Client(credentials=credentials, project=PROJECT_ID)
         
-        # Fallback to default credentials (env vars or gcloud auth)
+        # Priority 2: Try to use JSON credentials from environment variable (Railway)
+        gcp_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+        if gcp_json:
+            import json
+            credentials_dict = json.loads(gcp_json)
+            credentials = service_account.Credentials.from_service_account_info(
+                credentials_dict
+            )
+            return bigquery.Client(credentials=credentials, project=PROJECT_ID)
+        
+        # Priority 3: Fallback to default credentials (env vars or gcloud auth)
         return bigquery.Client(project=PROJECT_ID)
     except Exception as e:
         print(f"Error initializing BigQuery client: {e}")
@@ -215,4 +229,5 @@ async def search_emails(request: SearchRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

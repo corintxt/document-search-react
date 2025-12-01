@@ -7,7 +7,8 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await axios.get('/api/categories');
+                const apiUrl = import.meta.env.VITE_API_URL || '';
+                const res = await axios.get(`${apiUrl}/api/categories`);
                 setCategories(['All categories', ...res.data.categories]);
             } catch (err) {
                 console.error("Failed to fetch categories", err);

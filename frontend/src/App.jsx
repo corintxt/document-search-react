@@ -23,11 +23,13 @@ function App() {
   const handleSearch = async () => {
     setLoading(true);
     try {
+      // Use environment variable for API URL in production, fallback to proxy in development
+      const apiUrl = import.meta.env.VITE_API_URL || '';
       const payload = {
         query: query,
         ...filters
       };
-      const response = await axios.post('/api/search', payload);
+      const response = await axios.post(`${apiUrl}/api/search`, payload);
       setResults(response.data.results);
     } catch (error) {
       console.error("Search failed", error);
