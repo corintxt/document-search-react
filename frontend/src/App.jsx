@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import Sidebar from './components/Sidebar';
@@ -23,6 +23,19 @@ function App() {
     category_filter: null
   });
 
+  // Refs to always have access to current values
+  const filtersRef = useRef(filters);
+  const queryRef = useRef(query);
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    filtersRef.current = filters;
+  }, [filters]);
+
+  useEffect(() => {
+    queryRef.current = query;
+  }, [query]);
+
   // Fetch dataset configuration on mount
   useEffect(() => {
     const fetchConfig = async () => {
@@ -37,14 +50,16 @@ function App() {
     fetchConfig();
   }, []);
 
-  const handleSearch = async (overrideFilters) => {
+  const handleSearch = useCallback(async (overrideFilters) => {
+    // Ignore if overrideFilters is an event object (from onClick handlers)
+    const isValidFilters = overrideFilters && typeof overrideFilters === 'object' && 'limit' in overrideFilters;
     setLoading(true);
     try {
       // Use environment variable for API URL in production, fallback to proxy in development
       const apiUrl = import.meta.env.VITE_API_URL || '';
       const payload = {
-        query: query,
-        ...(overrideFilters ?? filters)
+        query: queryRef.current,
+        ...(isValidFilters ? overrideFilters : filtersRef.current)
       };
       const response = await axios.post(`${apiUrl}/api/search`, payload);
       setResults(response.data.results);
@@ -54,7 +69,7 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return (
     <div className="app-container">
