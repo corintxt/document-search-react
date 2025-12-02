@@ -1,15 +1,91 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const Highlight = ({ text, query }) => {
-    if (!query || !text) return <span>{text}</span>;
+// Component to render a URL as a hoverable [link]
+const LinkifiedUrl = ({ url }) => {
+    // Clean up the URL (remove surrounding < > if present)
+    const cleanUrl = url.replace(/^<|>$/g, '').trim();
+    
+    return (
+        <a 
+            href={cleanUrl} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-link"
+            title={cleanUrl}
+        >
+            [link]
+        </a>
+    );
+};
 
-    const parts = text.split(new RegExp(`(${query.split(' ').join('|')})`, 'gi'));
+// Process text to convert URLs to clickable [link] elements
+const processTextWithLinks = (text) => {
+    if (!text) return [];
+    
+    // Regex to match URLs (including those wrapped in < >)
+    const urlRegex = /(<https?:\/\/[^\s>]+>|https?:\/\/[^\s<>]+)/g;
+    
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    
+    while ((match = urlRegex.exec(text)) !== null) {
+        // Add text before the URL
+        if (match.index > lastIndex) {
+            parts.push({ type: 'text', content: text.slice(lastIndex, match.index) });
+        }
+        // Add the URL
+        parts.push({ type: 'url', content: match[0] });
+        lastIndex = match.index + match[0].length;
+    }
+    
+    // Add remaining text
+    if (lastIndex < text.length) {
+        parts.push({ type: 'text', content: text.slice(lastIndex) });
+    }
+    
+    return parts;
+};
+
+const Highlight = ({ text, query }) => {
+    if (!text) return <span>{text}</span>;
+    
+    // First, process text to identify URLs
+    const partsWithUrls = processTextWithLinks(text);
+    
+    if (!query) {
+        return (
+            <span>
+                {partsWithUrls.map((part, i) => 
+                    part.type === 'url' 
+                        ? <LinkifiedUrl key={i} url={part.content} />
+                        : <span key={i}>{part.content}</span>
+                )}
+            </span>
+        );
+    }
+    
+    // For text parts, apply highlighting
+    const highlightText = (str) => {
+        const queryTerms = query.split(' ').filter(q => q.length > 0);
+        const regex = new RegExp(`(${queryTerms.map(q => q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+        const parts = str.split(regex);
+        
+        return parts.map((part, i) => {
+            const isMatch = queryTerms.some(q => q.toLowerCase() === part.toLowerCase());
+            return isMatch 
+                ? <span key={i} className="highlight">{part}</span> 
+                : <span key={i}>{part}</span>;
+        });
+    };
+    
     return (
         <span>
-            {parts.map((part, i) =>
-                part.toLowerCase() === query.toLowerCase() || query.split(' ').some(q => q.toLowerCase() === part.toLowerCase()) ?
-                    <span key={i} className="highlight">{part}</span> : part
+            {partsWithUrls.map((part, i) => 
+                part.type === 'url' 
+                    ? <LinkifiedUrl key={i} url={part.content} />
+                    : <span key={i}>{highlightText(part.content)}</span>
             )}
         </span>
     );

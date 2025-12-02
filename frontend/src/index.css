@@ -422,6 +422,49 @@ body {
   border-radius: 0;
 }
 
+/* Inline link styling for long URLs */
+.inline-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+}
+
+.inline-link:hover {
+  text-decoration: underline;
+  color: var(--primary-hover);
+}
+
+/* Tooltip showing full URL on hover */
+.inline-link::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  white-space: nowrap;
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: var(--shadow-strong);
+}
+
+.inline-link:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
 .category-badge {
   display: inline-block;
   background-color: #f9f4da; /* soft yellow */
