@@ -78,7 +78,7 @@ function App() {
       setResults(response.data.results);
     } catch (err) {
       console.error("Search failed", err);
-      setError("Search failed - database configuration error");
+      setError("Search failed: database configuration error. Please select a different dataset.");
       setResults([]);
     } finally {
       setLoading(false);
