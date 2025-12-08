@@ -107,11 +107,9 @@ const Sidebar = ({ filters, setFilters, onSearch }) => {
                         onChange={(e) => {
                             if (e.target.checked) {
                                 const today = new Date().toISOString().split('T')[0];
-                                handleChange('date_from', today);
-                                handleChange('date_to', today);
+                                setFilters({ ...filters, date_from: today, date_to: today });
                             } else {
-                                handleChange('date_from', null);
-                                handleChange('date_to', null);
+                                setFilters({ ...filters, date_from: null, date_to: null });
                             }
                         }}
                     />
