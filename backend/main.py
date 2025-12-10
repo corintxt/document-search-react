@@ -124,10 +124,9 @@ class SearchRequest(BaseModel):
     search_type: str = "All fields"
     date_from: Optional[date] = None
     date_to: Optional[date] = None
-    sender_filter: Optional[str] = None
-    recipient_filter: Optional[str] = None
     show_summaries: bool = False
     category_filter: Optional[str] = None
+    subcategory_filter: Optional[str] = None
     table_id: Optional[str] = None  # ID of the selected table pair
 
 class AuthRequest(BaseModel):
@@ -143,17 +142,29 @@ async def check_auth(request: AuthRequest):
 async def get_categories(table_id: Optional[str] = Query(None)):
     TABLE, SUMMARY_TABLE = get_table_config(table_id)
     
-    if not SUMMARY_TABLE or not client:
-        return {"categories": []}
+    if not TABLE or not client:
+        return {"categories": [], "subcategories": []}
     
     try:
-        query = f"SELECT DISTINCT category FROM `{PROJECT_ID}.{DATASET}.{SUMMARY_TABLE}` WHERE category IS NOT NULL ORDER BY category"
-        query_job = client.query(query)
-        categories = [row.category for row in query_job]
-        return {"categories": categories}
+        # Get categories from main documents table
+        cat_query = f"SELECT DISTINCT category FROM `{PROJECT_ID}.{DATASET}.{TABLE}` WHERE category IS NOT NULL ORDER BY category"
+        cat_job = client.query(cat_query)
+        categories = [row.category for row in cat_job]
+        
+        # Get subcategories from summary table if available
+        subcategories = []
+        if SUMMARY_TABLE:
+            try:
+                subcat_query = f"SELECT DISTINCT subcategory FROM `{PROJECT_ID}.{DATASET}.{SUMMARY_TABLE}` WHERE subcategory IS NOT NULL ORDER BY subcategory"
+                subcat_job = client.query(subcat_query)
+                subcategories = [row.subcategory for row in subcat_job]
+            except:
+                pass
+        
+        return {"categories": categories, "subcategories": subcategories}
     except Exception as e:
         print(f"Error fetching categories: {e}")
-        return {"categories": []}
+        return {"categories": [], "subcategories": []}
 
 @app.get("/api/config")
 async def get_config():
@@ -194,12 +205,12 @@ async def search_emails(request: SearchRequest):
 
     # Keyword search
     if request.query:
-        if request.search_type == "Subject":
-            search_fields = [f"{table_prefix}Subject"]
-        elif request.search_type == "Body":
-            search_fields = [f"{table_prefix}Body"]
+        if request.search_type == "Filename":
+            search_fields = [f"{table_prefix}filename"]
+        elif request.search_type == "Text":
+            search_fields = [f"{table_prefix}text"]
         else:
-            search_fields = [f"{table_prefix}Subject", f"{table_prefix}Body"]
+            search_fields = [f"{table_prefix}filename", f"{table_prefix}text"]
         
         keywords = request.query.split()
         keyword_conditions = []
@@ -213,25 +224,21 @@ async def search_emails(request: SearchRequest):
         where_conditions.append(" AND ".join(keyword_conditions))
 
     # Filters
-    if request.sender_filter:
-        where_conditions.append(f"LOWER({table_prefix}`From`) LIKE LOWER(@sender)")
-        query_params.append(bigquery.ScalarQueryParameter("sender", "STRING", f"%{request.sender_filter}%"))
-    
-    if request.recipient_filter:
-        where_conditions.append(f"LOWER({table_prefix}`To`) LIKE LOWER(@recipient)")
-        query_params.append(bigquery.ScalarQueryParameter("recipient", "STRING", f"%{request.recipient_filter}%"))
-
     if request.date_from:
-        where_conditions.append(f"{table_prefix}Date_Sent >= @date_from")
+        where_conditions.append(f"DATE({table_prefix}mtime) >= @date_from")
         query_params.append(bigquery.ScalarQueryParameter("date_from", "DATE", request.date_from))
     
     if request.date_to:
-        where_conditions.append(f"{table_prefix}Date_Sent <= @date_to")
+        where_conditions.append(f"DATE({table_prefix}mtime) <= @date_to")
         query_params.append(bigquery.ScalarQueryParameter("date_to", "DATE", request.date_to))
 
-    if request.category_filter and needs_summary_join:
-        where_conditions.append("s.category = @category")
+    if request.category_filter:
+        where_conditions.append(f"{table_prefix}category = @category")
         query_params.append(bigquery.ScalarQueryParameter("category", "STRING", request.category_filter))
+    
+    if request.subcategory_filter and needs_summary_join:
+        where_conditions.append("s.subcategory = @subcategory")
+        query_params.append(bigquery.ScalarQueryParameter("subcategory", "STRING", request.subcategory_filter))
 
     where_clause = " AND ".join(where_conditions) if where_conditions else "1=1"
 
@@ -239,35 +246,39 @@ async def search_emails(request: SearchRequest):
     if needs_summary_join:
         sql_query = f"""
         SELECT 
-            e.id,
-            e.Body,
-            e.Subject,
-            e.`From` as sender,
-            e.`To` as recipient,
-            e.Date_Sent as date,
+            e.md5,
+            e.text,
+            e.snippet,
             e.filename,
+            e.category,
+            e.size_human,
+            e.page_count,
+            e.path,
+            e.mtime as date,
             s.summary,
-            s.category
+            s.subcategory
         FROM `{PROJECT_ID}.{DATASET}.{TABLE}` e
         LEFT JOIN `{PROJECT_ID}.{DATASET}.{SUMMARY_TABLE}` s
-        ON e.id = s.id
+        ON e.md5 = s.md5
         WHERE {where_clause}
-        ORDER BY e.Date_Sent DESC
+        ORDER BY e.mtime DESC
         LIMIT @limit
         """
     else:
         sql_query = f"""
         SELECT 
-            id,
-            Body,
-            Subject,
-            `From` as sender,
-            `To` as recipient,
-            Date_Sent as date,
-            filename
+            md5,
+            text,
+            snippet,
+            filename,
+            category,
+            size_human,
+            page_count,
+            path,
+            mtime as date
         FROM `{PROJECT_ID}.{DATASET}.{TABLE}`
         WHERE {where_clause}
-        ORDER BY Date_Sent DESC
+        ORDER BY mtime DESC
         LIMIT @limit
         """
     

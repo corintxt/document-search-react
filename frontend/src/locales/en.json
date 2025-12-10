@@ -1,6 +1,6 @@
 {
   "header": {
-    "title": "Email Search Tool",
+    "title": "Document Search Tool",
     "datasetInfo": "Target dataset"
   },
   "search": {
@@ -13,13 +13,12 @@
     "maxResults": "Max results",
     "searchIn": "Search in",
     "allFields": "All fields",
-    "subject": "Subject",
-    "body": "Body",
+    "filename": "Filename",
+    "text": "Text",
     "filterByCategory": "Filter by category",
     "allCategories": "All categories",
-    "emailFilters": "Email Filters",
-    "fromLabel": "From (sender contains)",
-    "toLabel": "To (recipient contains)",
+    "filterBySubcategory": "Filter by subcategory",
+    "allSubcategories": "All subcategories",
     "dateRange": "Date Range",
     "filterByDate": "Filter by date range",
     "displayOptions": "Display Options",
@@ -29,18 +28,19 @@
     "found": "Found {{count}} results",
     "noResults": "⚠️ No results found. Try different search terms or filters.",
     "totalResults": "Total Results",
-    "uniqueSenders": "Unique Senders",
-    "uniqueRecipients": "Unique Recipients",
+    "uniqueCategories": "Categories",
+    "totalPages": "Total Pages",
     "dateRange": "Date Range",
     "exportButton": "📥 Export Results to CSV",
     "date": "Date",
-    "from": "From",
-    "to": "To",
-    "body": "Body",
+    "pages": "Pages",
+    "size": "Size",
+    "path": "Path",
+    "snippet": "Snippet",
+    "text": "Text",
     "viewFull": "🔗 View Full",
     "collapse": "Collapse",
-    "fullEmailBody": "Full Email Body",
-    "sourceFile": "Source file",
-    "loading": "🔍 Searching emails..."
+    "fullDocumentText": "Full Document Text",
+    "loading": "🔍 Searching documents..."
   }
 }

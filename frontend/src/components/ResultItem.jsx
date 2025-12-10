@@ -95,52 +95,76 @@ const ResultItem = ({ result, query, showSummary }) => {
     const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
 
+    // Format the date from mtime timestamp
+    const formatDate = (dateVal) => {
+        if (!dateVal) return 'N/A';
+        try {
+            const d = new Date(dateVal);
+            return d.toLocaleDateString();
+        } catch {
+            return dateVal;
+        }
+    };
+
     return (
         <div className="result-card">
             <div className="result-header">
                 <div className="result-subject">
-                    <h5><Highlight text={result.Subject} query={query} /></h5>
+                    <h5><Highlight text={result.filename} query={query} /></h5>
                 </div>
                 <div className="result-date">
-                    <strong>{t('results.date')}:</strong> {result.date}
+                    <strong>{t('results.date')}:</strong> {formatDate(result.date)}
                 </div>
             </div>
 
             <div className="result-meta">
-                <div><strong>{t('results.from')}:</strong> {result.sender}</div>
-                <div><strong>{t('results.to')}:</strong> {result.recipient}</div>
+                {result.page_count && <div><strong>{t('results.pages')}:</strong> {result.page_count}</div>}
+                {result.size_human && <div><strong>{t('results.size')}:</strong> {result.size_human}</div>}
+                {result.path && <div><strong>{t('results.path')}:</strong> {result.path}</div>}
             </div>
 
             <div className="result-body">
                 {showSummary && result.summary ? (
                     <p><em><Highlight text={result.summary} query={query} /></em></p>
-                ) : (
+                ) : result.snippet ? (
                     <p>
-                        <strong>{t('results.body')}: </strong>
-                        <Highlight text={result.Body.substring(0, 500)} query={query} />
-                        {result.Body.length > 500 && '...'}
+                        <strong>{t('results.snippet')}: </strong>
+                        <Highlight text={result.snippet} query={query} />
                     </p>
-                )}
+                ) : result.text ? (
+                    <p>
+                        <strong>{t('results.text')}: </strong>
+                        <Highlight text={result.text.substring(0, 500)} query={query} />
+                        {result.text.length > 500 && '...'}
+                    </p>
+                ) : null}
             </div>
 
             <div className="result-footer">
                 {result.category && (
                     <span className="category-badge">{result.category}</span>
                 )}
-                <span className="result-id">ID: {result.id} • {t('results.sourceFile')}: {result.filename}</span>
+                {result.subcategory && (
+                    <span className="category-badge subcategory">{result.subcategory}</span>
+                )}
+                <span className="result-id">MD5: {result.md5}</span>
             </div>
 
-            <button className="view-full-btn" onClick={() => setExpanded(!expanded)}>
-                {expanded ? t('results.collapse') : t('results.viewFull')}
-            </button>
+            {result.text && (
+                <>
+                    <button className="view-full-btn" onClick={() => setExpanded(!expanded)}>
+                        {expanded ? t('results.collapse') : t('results.viewFull')}
+                    </button>
 
-            {expanded && (
-                <div className="full-body">
-                    <h6>{t('results.fullEmailBody')}</h6>
-                    <div className="body-content">
-                        <Highlight text={result.Body} query={query} />
-                    </div>
-                </div>
+                    {expanded && (
+                        <div className="full-body">
+                            <h6>{t('results.fullDocumentText')}</h6>
+                            <div className="body-content">
+                                <Highlight text={result.text} query={query} />
+                            </div>
+                        </div>
+                    )}
+                </>
             )}
             <hr />
         </div>

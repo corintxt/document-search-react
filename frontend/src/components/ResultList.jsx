@@ -9,11 +9,11 @@ const ResultList = ({ results, query, showSummary }) => {
         return <div className="no-results">{t('results.noResults')}</div>;
     }
 
-    const uniqueSenders = new Set(results.map(r => r.sender)).size;
-    const uniqueRecipients = new Set(results.map(r => r.recipient)).size;
-    const dates = results.map(r => new Date(r.date));
-    const minDate = new Date(Math.min(...dates)).toISOString().split('T')[0];
-    const maxDate = new Date(Math.max(...dates)).toISOString().split('T')[0];
+    const uniqueCategories = new Set(results.map(r => r.category).filter(Boolean)).size;
+    const totalPages = results.reduce((sum, r) => sum + (r.page_count || 0), 0);
+    const dates = results.map(r => r.date).filter(Boolean).map(d => new Date(d));
+    const minDate = dates.length > 0 ? new Date(Math.min(...dates)).toISOString().split('T')[0] : 'N/A';
+    const maxDate = dates.length > 0 ? new Date(Math.max(...dates)).toISOString().split('T')[0] : 'N/A';
 
     const handleExport = () => {
         // Escape CSV values properly
@@ -37,7 +37,7 @@ const ResultList = ({ results, query, showSummary }) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `email_search_${new Date().toISOString().split('T')[0]}.csv`;
+        a.download = `document_search_${new Date().toISOString().split('T')[0]}.csv`;
         a.click();
         window.URL.revokeObjectURL(url);
     };
@@ -52,12 +52,12 @@ const ResultList = ({ results, query, showSummary }) => {
                     <div className="stat-value">{results.length}</div>
                 </div>
                 <div className="stat-box">
-                    <div className="stat-label">{t('results.uniqueSenders')}</div>
-                    <div className="stat-value">{uniqueSenders}</div>
+                    <div className="stat-label">{t('results.uniqueCategories')}</div>
+                    <div className="stat-value">{uniqueCategories}</div>
                 </div>
                 <div className="stat-box">
-                    <div className="stat-label">{t('results.uniqueRecipients')}</div>
-                    <div className="stat-value">{uniqueRecipients}</div>
+                    <div className="stat-label">{t('results.totalPages')}</div>
+                    <div className="stat-value">{totalPages}</div>
                 </div>
                 <div className="stat-box">
                     <div className="stat-label">{t('results.dateRange')}</div>

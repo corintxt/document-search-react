@@ -19,10 +19,9 @@ function App() {
     search_type: 'All fields',
     date_from: null,
     date_to: null,
-    sender_filter: '',
-    recipient_filter: '',
     show_summaries: false,
-    category_filter: null
+    category_filter: null,
+    subcategory_filter: null
   });
 
   // Refs to always have access to current values

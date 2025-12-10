@@ -5,6 +5,7 @@ import axios from 'axios';
 const Sidebar = ({ filters, setFilters, onSearch, selectedTableId }) => {
     const { t } = useTranslation();
     const [categories, setCategories] = useState([]);
+    const [subcategories, setSubcategories] = useState([]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -12,7 +13,8 @@ const Sidebar = ({ filters, setFilters, onSearch, selectedTableId }) => {
                 const apiUrl = import.meta.env.VITE_API_URL || '';
                 const params = selectedTableId ? `?table_id=${selectedTableId}` : '';
                 const res = await axios.get(`${apiUrl}/api/categories${params}`);
-                setCategories([t('sidebar.allCategories'), ...res.data.categories]);
+                setCategories([t('sidebar.allCategories'), ...(res.data.categories || [])]);
+                setSubcategories([t('sidebar.allSubcategories'), ...(res.data.subcategories || [])]);
             } catch (err) {
                 console.error("Failed to fetch categories", err);
             }
@@ -24,7 +26,7 @@ const Sidebar = ({ filters, setFilters, onSearch, selectedTableId }) => {
         // Compute next filters from current props (avoid side-effects in setState updater)
         const next = { ...filters, [key]: value };
         setFilters(next);
-        if (key === 'category_filter' && typeof onSearch === 'function') {
+        if ((key === 'category_filter' || key === 'subcategory_filter') && typeof onSearch === 'function') {
             onSearch(next);
         }
     };
@@ -50,8 +52,8 @@ const Sidebar = ({ filters, setFilters, onSearch, selectedTableId }) => {
                 <div className="radio-group">
                     {[
                         { value: 'All fields', label: t('sidebar.allFields') },
-                        { value: 'Subject', label: t('sidebar.subject') },
-                        { value: 'Body', label: t('sidebar.body') }
+                        { value: 'Filename', label: t('sidebar.filename') },
+                        { value: 'Text', label: t('sidebar.text') }
                     ].map(type => (
                         <label key={type.value}>
                             <input
@@ -80,24 +82,19 @@ const Sidebar = ({ filters, setFilters, onSearch, selectedTableId }) => {
                 </div>
             )}
 
-            <h3>{t('sidebar.emailFilters')}</h3>
-            <div className="filter-group">
-                <label>{t('sidebar.fromLabel')}:</label>
-                <input
-                    type="text"
-                    value={filters.sender_filter || ''}
-                    onChange={(e) => handleChange('sender_filter', e.target.value)}
-                />
-            </div>
-
-            <div className="filter-group">
-                <label>{t('sidebar.toLabel')}:</label>
-                <input
-                    type="text"
-                    value={filters.recipient_filter || ''}
-                    onChange={(e) => handleChange('recipient_filter', e.target.value)}
-                />
-            </div>
+            {subcategories.length > 1 && (
+                <div className="filter-group">
+                    <label>{t('sidebar.filterBySubcategory')}:</label>
+                    <select
+                        value={filters.subcategory_filter || t('sidebar.allSubcategories')}
+                        onChange={(e) => handleChange('subcategory_filter', e.target.value === t('sidebar.allSubcategories') ? null : e.target.value)}
+                    >
+                        {subcategories.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                    </select>
+                </div>
+            )}
 
             <h3>{t('sidebar.dateRange')}</h3>
             <div className="filter-group">

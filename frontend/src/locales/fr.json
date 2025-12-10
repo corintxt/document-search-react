@@ -1,6 +1,6 @@
 {
   "header": {
-    "title": "Email Search Tool",
+    "title": "Outil de recherche de documents",
     "datasetInfo": "Ensemble de données cible"
   },
   "search": {
@@ -13,13 +13,12 @@
     "maxResults": "Résultats maximum",
     "searchIn": "Rechercher dans",
     "allFields": "Tous les champs",
-    "subject": "Objet",
-    "body": "Corps",
+    "filename": "Nom de fichier",
+    "text": "Texte",
     "filterByCategory": "Filtrer par catégorie",
     "allCategories": "Toutes les catégories",
-    "emailFilters": "Filtres d'e-mail",
-    "fromLabel": "De (l'expéditeur contient)",
-    "toLabel": "À (le destinataire contient)",
+    "filterBySubcategory": "Filtrer par sous-catégorie",
+    "allSubcategories": "Toutes les sous-catégories",
     "dateRange": "Plage de dates",
     "filterByDate": "Filtrer par plage de dates",
     "displayOptions": "Options d'affichage",
@@ -29,18 +28,19 @@
     "found": "{{count}} résultats trouvés",
     "noResults": "⚠️ Aucun résultat trouvé. Essayez d'autres termes de recherche ou filtres.",
     "totalResults": "Résultats totaux",
-    "uniqueSenders": "Expéditeurs uniques",
-    "uniqueRecipients": "Destinataires uniques",
+    "uniqueCategories": "Catégories",
+    "totalPages": "Pages totales",
     "dateRange": "Plage de dates",
     "exportButton": "📥 Exporter les résultats en CSV",
     "date": "Date",
-    "from": "De",
-    "to": "À",
-    "body": "Corps",
+    "pages": "Pages",
+    "size": "Taille",
+    "path": "Chemin",
+    "snippet": "Extrait",
+    "text": "Texte",
     "viewFull": "🔗 Voir complet",
     "collapse": "Réduire",
-    "fullEmailBody": "Corps complet de l'e-mail",
-    "sourceFile": "Fichier source",
-    "loading": "🔍 Recherche d'e-mails..."
+    "fullDocumentText": "Texte complet du document",
+    "loading": "🔍 Recherche de documents..."
   }
 }
