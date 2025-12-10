@@ -1,4 +1,8 @@
 {
+  "nav": {
+    "search": "Recherche",
+    "documentList": "Liste des documents"
+  },
   "header": {
     "title": "Outil de recherche de documents",
     "datasetInfo": "Ensemble de données cible"
@@ -42,5 +46,13 @@
     "collapse": "Réduire",
     "fullDocumentText": "Texte complet du document",
     "loading": "🔍 Recherche de documents..."
+  },
+  "documentList": {
+    "noDocuments": "Aucun document trouvé.",
+    "totalDocuments": "{{count}} documents",
+    "filtered": "sur {{total}} au total",
+    "filename": "Nom de fichier",
+    "category": "Catégorie",
+    "summary": "Résumé"
   }
 }

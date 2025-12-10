@@ -638,3 +638,218 @@ body {
   color: var(--bg-primary);
   border-color: var(--text-primary);
 }
+
+/* Navigation Header */
+.nav-header {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-link {
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+}
+
+.nav-link.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--primary);
+}
+
+/* Document List Table */
+.document-list {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+}
+
+.document-list-header {
+  padding: 0.75rem 1rem;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.document-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.document-table th {
+  text-align: left;
+  padding: 0.625rem 1rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.document-table td {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--bg-tertiary);
+  vertical-align: top;
+}
+
+.document-table tr:hover {
+  background: var(--bg-secondary);
+}
+
+.document-table th:nth-child(1),
+.document-table td:nth-child(1) {
+  width: 30%;
+}
+
+.document-table th:nth-child(2),
+.document-table td:nth-child(2) {
+  width: 15%;
+}
+
+.document-table th:nth-child(3),
+.document-table td:nth-child(3) {
+  width: 55%;
+}
+
+.filename-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  word-break: break-word;
+}
+
+.filename-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+.category-badge.compact {
+  font-size: 0.6875rem;
+  padding: 0.125rem 0.375rem;
+}
+
+.summary-cell {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.summary-text {
+  display: block;
+}
+
+.no-summary {
+  color: var(--text-muted);
+}
+
+/* Document Panel (Modal) */
+.document-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.document-panel {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-strong);
+}
+
+.document-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.document-panel-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  word-break: break-word;
+  padding-right: 1rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.close-btn:hover {
+  color: var(--text-primary);
+}
+
+.document-panel-content {
+  padding: 1.5rem;
+}
+
+.document-panel-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.document-summary,
+.document-snippet {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--bg-tertiary);
+  border-left: 3px solid var(--primary);
+}
+
+.document-summary h4,
+.document-snippet h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.document-panel-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}

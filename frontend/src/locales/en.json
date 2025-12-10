@@ -1,4 +1,8 @@
 {
+  "nav": {
+    "search": "Search",
+    "documentList": "Document List"
+  },
   "header": {
     "title": "Document Search Tool",
     "datasetInfo": "Target dataset"
@@ -42,5 +46,13 @@
     "collapse": "Collapse",
     "fullDocumentText": "Full Document Text",
     "loading": "🔍 Searching documents..."
+  },
+  "documentList": {
+    "noDocuments": "No documents found.",
+    "totalDocuments": "{{count}} documents",
+    "filtered": "of {{total}} total",
+    "filename": "Filename",
+    "category": "Category",
+    "summary": "Summary"
   }
 }

@@ -3,16 +3,21 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import Sidebar from './components/Sidebar';
 import ResultList from './components/ResultList';
+import DocumentList from './components/DocumentList';
+import DocumentPanel from './components/DocumentPanel';
 import './index.css';
 
 function App() {
   const { t, i18n } = useTranslation();
   const [results, setResults] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState('');
   const [datasetInfo, setDatasetInfo] = useState(null);
   const [selectedTableId, setSelectedTableId] = useState(null);
+  const [activeView, setActiveView] = useState('search'); // 'search' or 'documents'
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
   const [filters, setFilters] = useState({
     limit: 100,
@@ -84,6 +89,34 @@ function App() {
     }
   }, []);
 
+  const fetchDocuments = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      const params = selectedTableIdRef.current ? `?table_id=${selectedTableIdRef.current}` : '';
+      const response = await axios.get(`${apiUrl}/api/documents${params}`);
+      setDocuments(response.data.documents);
+    } catch (err) {
+      console.error("Failed to fetch documents", err);
+      setError("Failed to load document list.");
+      setDocuments([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleViewChange = (view) => {
+    setActiveView(view);
+    if (view === 'documents' && documents.length === 0) {
+      fetchDocuments();
+    }
+  };
+
+  const handleSelectDocument = (doc) => {
+    setSelectedDocument(doc);
+  };
+
   return (
     <div className="app-container">
       <Sidebar
@@ -94,6 +127,21 @@ function App() {
       />
 
       <div className="main-content">
+        <nav className="nav-header">
+          <button
+            className={`nav-link ${activeView === 'search' ? 'active' : ''}`}
+            onClick={() => handleViewChange('search')}
+          >
+            {t('nav.search')}
+          </button>
+          <button
+            className={`nav-link ${activeView === 'documents' ? 'active' : ''}`}
+            onClick={() => handleViewChange('documents')}
+          >
+            {t('nav.documentList')}
+          </button>
+        </nav>
+
         <header className="app-header">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
@@ -154,14 +202,34 @@ function App() {
           </button>
         </div>
 
-        {loading ? (
-          <div className="loading-spinner">{t('results.loading')}</div>
-        ) : error ? (
-          <div className="error-message">{error}</div>
+        {activeView === 'search' ? (
+          <>
+            {loading ? (
+              <div className="loading-spinner">{t('results.loading')}</div>
+            ) : error ? (
+              <div className="error-message">{error}</div>
+            ) : (
+              <ResultList results={results} query={query} showSummary={filters.show_summaries} />
+            )}
+          </>
         ) : (
-          <ResultList results={results} query={query} showSummary={filters.show_summaries} />
+          <DocumentList 
+            documents={documents} 
+            onSelectDocument={handleSelectDocument}
+            loading={loading}
+            query={query}
+            categoryFilter={filters.category_filter}
+            subcategoryFilter={filters.subcategory_filter}
+          />
         )}
       </div>
+
+      {selectedDocument && (
+        <DocumentPanel 
+          document={selectedDocument} 
+          onClose={() => setSelectedDocument(null)} 
+        />
+      )}
     </div>
   );
 }

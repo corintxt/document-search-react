@@ -174,6 +174,78 @@ async def get_config():
         "tables": DATASET_TABLES
     }
 
+@app.get("/api/documents")
+async def list_documents(table_id: Optional[str] = Query(None), limit: int = Query(500)):
+    """Return a list of all documents with filename, category, and summary"""
+    if not client:
+        raise HTTPException(status_code=500, detail="BigQuery client not initialized")
+    
+    TABLE, SUMMARY_TABLE = get_table_config(table_id)
+    
+    if not TABLE:
+        raise HTTPException(status_code=400, detail="No table configured")
+    
+    # Check summary table availability
+    summary_table_available = False
+    if SUMMARY_TABLE:
+        try:
+            client.get_table(f"{PROJECT_ID}.{DATASET}.{SUMMARY_TABLE}")
+            summary_table_available = True
+        except:
+            pass
+    
+    if summary_table_available:
+        sql_query = f"""
+        SELECT 
+            e.md5,
+            e.text,
+            e.snippet,
+            e.filename,
+            e.category,
+            e.size_human,
+            e.page_count,
+            e.path,
+            e.mtime as date,
+            s.summary,
+            s.subcategory
+        FROM `{PROJECT_ID}.{DATASET}.{TABLE}` e
+        LEFT JOIN `{PROJECT_ID}.{DATASET}.{SUMMARY_TABLE}` s
+        ON e.md5 = s.md5
+        ORDER BY e.filename ASC
+        LIMIT @limit
+        """
+    else:
+        sql_query = f"""
+        SELECT 
+            md5,
+            text,
+            snippet,
+            filename,
+            category,
+            size_human,
+            page_count,
+            path,
+            mtime as date
+        FROM `{PROJECT_ID}.{DATASET}.{TABLE}`
+        ORDER BY filename ASC
+        LIMIT @limit
+        """
+    
+    query_params = [bigquery.ScalarQueryParameter("limit", "INT64", limit)]
+    job_config = bigquery.QueryJobConfig(query_parameters=query_params)
+    
+    try:
+        query_job = client.query(sql_query, job_config=job_config)
+        results = []
+        for row in query_job:
+            item = dict(row)
+            if item.get('date'):
+                item['date'] = item['date'].isoformat()
+            results.append(item)
+        return {"documents": results}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/api/search")
 async def search_emails(request: SearchRequest):
     if not client:
