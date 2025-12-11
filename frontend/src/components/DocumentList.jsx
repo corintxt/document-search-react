@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 const ITEMS_PER_PAGE = 20;
 
-const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFilter, subcategoryFilter }) => {
+const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFilter, subcategoryFilter, isBookmarked, onToggleBookmark }) => {
     const { t } = useTranslation();
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -73,36 +73,49 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
             <table className="document-table">
                 <thead>
                     <tr>
+                        <th style={{ width: '40px' }}></th>
                         <th>{t('documentList.filename')}</th>
                         <th>{t('documentList.category')}</th>
                         <th>{t('documentList.summary')}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {paginatedDocuments.map((doc, idx) => (
-                        <tr key={doc.md5 || idx}>
-                            <td>
-                                <button 
-                                    className="filename-link"
-                                    onClick={() => onSelectDocument(doc)}
-                                >
-                                    {doc.filename}
-                                </button>
-                            </td>
-                            <td>
-                                {doc.category && (
-                                    <span className="category-badge compact">{doc.category}</span>
-                                )}
-                            </td>
-                            <td className="summary-cell">
-                                {doc.summary ? (
-                                    <span className="summary-text">{doc.summary.substring(0, 150)}{doc.summary.length > 150 ? '...' : ''}</span>
-                                ) : (
-                                    <span className="no-summary">—</span>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
+                    {paginatedDocuments.map((doc, idx) => {
+                        const bookmarked = isBookmarked ? isBookmarked(doc.md5) : false;
+                        return (
+                            <tr key={doc.md5 || idx}>
+                                <td>
+                                    <button 
+                                        className={`bookmark-btn ${bookmarked ? 'bookmarked' : ''}`}
+                                        onClick={() => onToggleBookmark && onToggleBookmark(doc)}
+                                        title={bookmarked ? t('bookmarks.remove') : t('bookmarks.add')}
+                                    >
+                                        {bookmarked ? '★' : '☆'}
+                                    </button>
+                                </td>
+                                <td>
+                                    <button 
+                                        className="filename-link"
+                                        onClick={() => onSelectDocument(doc)}
+                                    >
+                                        {doc.filename}
+                                    </button>
+                                </td>
+                                <td>
+                                    {doc.category && (
+                                        <span className="category-badge compact">{doc.category}</span>
+                                    )}
+                                </td>
+                                <td className="summary-cell">
+                                    {doc.summary ? (
+                                        <span className="summary-text">{doc.summary.substring(0, 150)}{doc.summary.length > 150 ? '...' : ''}</span>
+                                    ) : (
+                                        <span className="no-summary">—</span>
+                                    )}
+                                </td>
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </table>
 

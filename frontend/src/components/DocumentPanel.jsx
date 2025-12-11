@@ -84,7 +84,7 @@ const Highlight = ({ text, query }) => {
     );
 };
 
-const DocumentPanel = ({ document, onClose }) => {
+const DocumentPanel = ({ document, onClose, isBookmarked, onToggleBookmark }) => {
     const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
 
@@ -104,7 +104,16 @@ const DocumentPanel = ({ document, onClose }) => {
         <div className="document-panel-overlay" onClick={onClose}>
             <div className="document-panel" onClick={(e) => e.stopPropagation()}>
                 <div className="document-panel-header">
-                    <h3>{document.filename}</h3>
+                    <div className="document-panel-title">
+                        <button 
+                            className={`bookmark-btn large ${isBookmarked ? 'bookmarked' : ''}`}
+                            onClick={() => onToggleBookmark && onToggleBookmark(document)}
+                            title={isBookmarked ? t('bookmarks.remove') : t('bookmarks.add')}
+                        >
+                            {isBookmarked ? '★' : '☆'}
+                        </button>
+                        <h3>{document.filename}</h3>
+                    </div>
                     <button className="close-btn" onClick={onClose}>×</button>
                 </div>
                 

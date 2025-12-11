@@ -4,7 +4,7 @@ import ResultItem from './ResultItem';
 
 const ITEMS_PER_PAGE = 20;
 
-const ResultList = ({ results, query, showSummary }) => {
+const ResultList = ({ results, query, showSummary, isBookmarked, onToggleBookmark }) => {
     const { t } = useTranslation();
     const [currentPage, setCurrentPage] = useState(1);
     
@@ -115,7 +115,14 @@ const ResultList = ({ results, query, showSummary }) => {
             <hr />
 
             {paginatedResults.map((result, idx) => (
-                <ResultItem key={startIndex + idx} result={result} query={query} showSummary={showSummary} />
+                <ResultItem 
+                    key={startIndex + idx} 
+                    result={result} 
+                    query={query} 
+                    showSummary={showSummary}
+                    isBookmarked={isBookmarked}
+                    onToggleBookmark={onToggleBookmark}
+                />
             ))}
 
             {totalPages > 1 && (

@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar';
 import ResultList from './components/ResultList';
 import DocumentList from './components/DocumentList';
 import DocumentPanel from './components/DocumentPanel';
+import BookmarkList from './components/BookmarkList';
 import './index.css';
 
 function App() {
@@ -16,8 +17,29 @@ function App() {
   const [query, setQuery] = useState('');
   const [datasetInfo, setDatasetInfo] = useState(null);
   const [selectedTableId, setSelectedTableId] = useState(null);
-  const [activeView, setActiveView] = useState('search'); // 'search' or 'documents'
+  const [activeView, setActiveView] = useState('search'); // 'search', 'documents', or 'bookmarks'
   const [selectedDocument, setSelectedDocument] = useState(null);
+  const [bookmarks, setBookmarks] = useState([]); // Array of bookmarked documents
+
+  // Bookmark functions
+  const toggleBookmark = (document) => {
+    setBookmarks(prev => {
+      const exists = prev.some(b => b.md5 === document.md5);
+      if (exists) {
+        return prev.filter(b => b.md5 !== document.md5);
+      } else {
+        return [...prev, document];
+      }
+    });
+  };
+
+  const isBookmarked = (md5) => {
+    return bookmarks.some(b => b.md5 === md5);
+  };
+
+  const removeBookmark = (md5) => {
+    setBookmarks(prev => prev.filter(b => b.md5 !== md5));
+  };
 
   const [filters, setFilters] = useState({
     limit: 100,
@@ -140,6 +162,12 @@ function App() {
           >
             {t('nav.documentList')}
           </button>
+          <button
+            className={`nav-link ${activeView === 'bookmarks' ? 'active' : ''}`}
+            onClick={() => handleViewChange('bookmarks')}
+          >
+            {t('nav.bookmarks')} {bookmarks.length > 0 && `(${bookmarks.length})`}
+          </button>
         </nav>
 
         <header className="app-header">
@@ -209,10 +237,16 @@ function App() {
             ) : error ? (
               <div className="error-message">{error}</div>
             ) : (
-              <ResultList results={results} query={query} showSummary={filters.show_summaries} />
+              <ResultList 
+                results={results} 
+                query={query} 
+                showSummary={filters.show_summaries}
+                isBookmarked={isBookmarked}
+                onToggleBookmark={toggleBookmark}
+              />
             )}
           </>
-        ) : (
+        ) : activeView === 'documents' ? (
           <DocumentList 
             documents={documents} 
             onSelectDocument={handleSelectDocument}
@@ -220,6 +254,14 @@ function App() {
             query={query}
             categoryFilter={filters.category_filter}
             subcategoryFilter={filters.subcategory_filter}
+            isBookmarked={isBookmarked}
+            onToggleBookmark={toggleBookmark}
+          />
+        ) : (
+          <BookmarkList
+            bookmarks={bookmarks}
+            onSelectDocument={handleSelectDocument}
+            onRemoveBookmark={removeBookmark}
           />
         )}
       </div>
@@ -227,7 +269,9 @@ function App() {
       {selectedDocument && (
         <DocumentPanel 
           document={selectedDocument} 
-          onClose={() => setSelectedDocument(null)} 
+          onClose={() => setSelectedDocument(null)}
+          isBookmarked={isBookmarked(selectedDocument.md5)}
+          onToggleBookmark={toggleBookmark}
         />
       )}
     </div>

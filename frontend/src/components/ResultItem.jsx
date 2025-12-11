@@ -91,9 +91,10 @@ const Highlight = ({ text, query }) => {
     );
 };
 
-const ResultItem = ({ result, query, showSummary }) => {
+const ResultItem = ({ result, query, showSummary, isBookmarked, onToggleBookmark }) => {
     const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
+    const bookmarked = isBookmarked ? isBookmarked(result.md5) : false;
 
     // Format the date from mtime timestamp
     const formatDate = (dateVal) => {
@@ -110,6 +111,13 @@ const ResultItem = ({ result, query, showSummary }) => {
         <div className="result-card">
             <div className="result-header">
                 <div className="result-subject">
+                    <button 
+                        className={`bookmark-btn ${bookmarked ? 'bookmarked' : ''}`}
+                        onClick={() => onToggleBookmark && onToggleBookmark(result)}
+                        title={bookmarked ? t('bookmarks.remove') : t('bookmarks.add')}
+                    >
+                        {bookmarked ? '★' : '☆'}
+                    </button>
                     <h5><Highlight text={result.filename} query={query} /></h5>
                 </div>
                 <div className="result-date">
@@ -129,13 +137,14 @@ const ResultItem = ({ result, query, showSummary }) => {
                 ) : result.snippet ? (
                     <p>
                         <strong>{t('results.snippet')}: </strong>
-                        <Highlight text={result.snippet} query={query} />
+                        <Highlight text={result.snippet.substring(0, 375)} query={query} />
+                        {result.snippet.length > 375 && '...'}
                     </p>
                 ) : result.text ? (
                     <p>
                         <strong>{t('results.text')}: </strong>
-                        <Highlight text={result.text.substring(0, 500)} query={query} />
-                        {result.text.length > 500 && '...'}
+                        <Highlight text={result.text.substring(0, 375)} query={query} />
+                        {result.text.length > 375 && '...'}
                     </p>
                 ) : null}
             </div>
@@ -147,24 +156,21 @@ const ResultItem = ({ result, query, showSummary }) => {
                 {result.subcategory && (
                     <span className="category-badge subcategory">{result.subcategory}</span>
                 )}
+                {result.text && (
+                    <button className="view-full-btn-inline" onClick={() => setExpanded(!expanded)}>
+                        {expanded ? t('results.collapse') : t('results.viewFull')}
+                    </button>
+                )}
                 <span className="result-id">MD5: {result.md5}</span>
             </div>
 
-            {result.text && (
-                <>
-                    <button className="view-full-btn" onClick={() => setExpanded(!expanded)}>
-                        {expanded ? t('results.collapse') : t('results.viewFull')}
-                    </button>
-
-                    {expanded && (
-                        <div className="full-body">
-                            <h6>{t('results.fullDocumentText')}</h6>
-                            <div className="body-content">
-                                <Highlight text={result.text} query={query} />
-                            </div>
-                        </div>
-                    )}
-                </>
+            {expanded && result.text && (
+                <div className="full-body">
+                    <h6>{t('results.fullDocumentText')}</h6>
+                    <div className="body-content">
+                        <Highlight text={result.text} query={query} />
+                    </div>
+                </div>
             )}
             <hr />
         </div>

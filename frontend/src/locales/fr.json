@@ -1,7 +1,8 @@
 {
   "nav": {
     "search": "Recherche",
-    "documentList": "Liste des documents"
+    "documentList": "Liste des documents",
+    "bookmarks": "Signets"
   },
   "header": {
     "title": "Outil de recherche de documents",
@@ -55,5 +56,12 @@
     "filename": "Nom de fichier",
     "category": "Catégorie",
     "summary": "Résumé"
+  },
+  "bookmarks": {
+    "title": "Documents signets",
+    "empty": "Aucun signet. Cliquez sur l'icône ☆ d'un document pour l'ajouter.",
+    "add": "Ajouter aux signets",
+    "remove": "Retirer des signets",
+    "export": "Exporter les signets"
   }
 }
