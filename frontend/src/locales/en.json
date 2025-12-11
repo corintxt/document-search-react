@@ -1,4 +1,11 @@
 {
+  "auth": {
+    "title": "Document Search Tool",
+    "prompt": "Please enter the password to access this tool.",
+    "placeholder": "Password",
+    "submit": "Enter",
+    "error": "Incorrect password. Please try again."
+  },
   "nav": {
     "search": "Search",
     "documentList": "Document List",

@@ -6,10 +6,14 @@ import ResultList from './components/ResultList';
 import DocumentList from './components/DocumentList';
 import DocumentPanel from './components/DocumentPanel';
 import BookmarkList from './components/BookmarkList';
+import PasswordScreen from './components/PasswordScreen';
 import './index.css';
 
 function App() {
   const { t, i18n } = useTranslation();
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('authenticated') === 'true';
+  });
   const [results, setResults] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -138,6 +142,12 @@ function App() {
   const handleSelectDocument = (doc) => {
     setSelectedDocument(doc);
   };
+
+  // Show password screen if not authenticated (skip in dev mode)
+  const isDev = import.meta.env.DEV;
+  if (!isDev && !isAuthenticated) {
+    return <PasswordScreen onAuthenticate={setIsAuthenticated} />;
+  }
 
   return (
     <div className="app-container">

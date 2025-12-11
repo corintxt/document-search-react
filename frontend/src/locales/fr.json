@@ -1,4 +1,11 @@
 {
+  "auth": {
+    "title": "Outil de recherche de documents",
+    "prompt": "Veuillez entrer le mot de passe pour accéder à cet outil.",
+    "placeholder": "Mot de passe",
+    "submit": "Entrer",
+    "error": "Mot de passe incorrect. Veuillez réessayer."
+  },
   "nav": {
     "search": "Recherche",
     "documentList": "Liste des documents",
