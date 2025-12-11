@@ -1,8 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+
+const ITEMS_PER_PAGE = 20;
 
 const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFilter, subcategoryFilter }) => {
     const { t } = useTranslation();
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Filter documents based on query and category
     const filteredDocuments = useMemo(() => {
@@ -36,6 +39,17 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
         });
     }, [documents, query, categoryFilter, subcategoryFilter]);
 
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [query, categoryFilter, subcategoryFilter]);
+
+    // Pagination calculations
+    const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const paginatedDocuments = filteredDocuments.slice(startIndex, endIndex);
+
     if (loading) {
         return <div className="loading-spinner">{t('results.loading')}</div>;
     }
@@ -65,7 +79,7 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredDocuments.map((doc, idx) => (
+                    {paginatedDocuments.map((doc, idx) => (
                         <tr key={doc.md5 || idx}>
                             <td>
                                 <button 
@@ -91,6 +105,42 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
                     ))}
                 </tbody>
             </table>
+
+            {totalPages > 1 && (
+                <div className="pagination">
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(1)}
+                        disabled={currentPage === 1}
+                    >
+                        «
+                    </button>
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                    >
+                        ‹
+                    </button>
+                    <span className="pagination-info">
+                        {t('documentList.page', { current: currentPage, total: totalPages })}
+                    </span>
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                    >
+                        ›
+                    </button>
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(totalPages)}
+                        disabled={currentPage === totalPages}
+                    >
+                        »
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

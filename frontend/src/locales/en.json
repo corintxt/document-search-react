@@ -51,6 +51,7 @@
     "noDocuments": "No documents found.",
     "totalDocuments": "{{count}} documents",
     "filtered": "of {{total}} total",
+    "page": "Page {{current}} of {{total}}",
     "filename": "Filename",
     "category": "Category",
     "summary": "Summary"

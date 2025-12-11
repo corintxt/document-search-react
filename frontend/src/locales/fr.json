@@ -51,6 +51,7 @@
     "noDocuments": "Aucun document trouvé.",
     "totalDocuments": "{{count}} documents",
     "filtered": "sur {{total}} au total",
+    "page": "Page {{current}} sur {{total}}",
     "filename": "Nom de fichier",
     "category": "Catégorie",
     "summary": "Résumé"

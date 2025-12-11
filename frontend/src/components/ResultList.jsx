@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ResultItem from './ResultItem';
 
+const ITEMS_PER_PAGE = 20;
+
 const ResultList = ({ results, query, showSummary }) => {
     const { t } = useTranslation();
+    const [currentPage, setCurrentPage] = useState(1);
     
     if (!results || results.length === 0) {
         return <div className="no-results">{t('results.noResults')}</div>;
     }
 
     const uniqueCategories = new Set(results.map(r => r.category).filter(Boolean)).size;
-    const totalPages = results.reduce((sum, r) => sum + (r.page_count || 0), 0);
+    const totalDocPages = results.reduce((sum, r) => sum + (r.page_count || 0), 0);
     const dates = results.map(r => r.date).filter(Boolean).map(d => new Date(d));
     const minDate = dates.length > 0 ? new Date(Math.min(...dates)).toISOString().split('T')[0] : 'N/A';
     const maxDate = dates.length > 0 ? new Date(Math.max(...dates)).toISOString().split('T')[0] : 'N/A';
+
+    // Pagination
+    const totalPages = Math.ceil(results.length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const paginatedResults = results.slice(startIndex, endIndex);
 
     const handleExport = () => {
         // Escape CSV values properly
@@ -57,7 +66,7 @@ const ResultList = ({ results, query, showSummary }) => {
                 </div>
                 <div className="stat-box">
                     <div className="stat-label">{t('results.totalPages')}</div>
-                    <div className="stat-value">{totalPages}</div>
+                    <div className="stat-value">{totalDocPages}</div>
                 </div>
                 <div className="stat-box">
                     <div className="stat-label">{t('results.dateRange')}</div>
@@ -67,11 +76,83 @@ const ResultList = ({ results, query, showSummary }) => {
 
             <button onClick={handleExport} className="export-btn-main">{t('results.exportButton')}</button>
 
+            {totalPages > 1 && (
+                <div className="pagination">
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(1)}
+                        disabled={currentPage === 1}
+                    >
+                        «
+                    </button>
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                    >
+                        ‹
+                    </button>
+                    <span className="pagination-info">
+                        {t('documentList.page', { current: currentPage, total: totalPages })}
+                    </span>
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                    >
+                        ›
+                    </button>
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(totalPages)}
+                        disabled={currentPage === totalPages}
+                    >
+                        »
+                    </button>
+                </div>
+            )}
+
             <hr />
 
-            {results.map((result, idx) => (
-                <ResultItem key={idx} result={result} query={query} showSummary={showSummary} />
+            {paginatedResults.map((result, idx) => (
+                <ResultItem key={startIndex + idx} result={result} query={query} showSummary={showSummary} />
             ))}
+
+            {totalPages > 1 && (
+                <div className="pagination">
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(1)}
+                        disabled={currentPage === 1}
+                    >
+                        «
+                    </button>
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                    >
+                        ‹
+                    </button>
+                    <span className="pagination-info">
+                        {t('documentList.page', { current: currentPage, total: totalPages })}
+                    </span>
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                    >
+                        ›
+                    </button>
+                    <button 
+                        className="pagination-btn"
+                        onClick={() => setCurrentPage(totalPages)}
+                        disabled={currentPage === totalPages}
+                    >
+                        »
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
