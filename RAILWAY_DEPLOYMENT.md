@@ -24,13 +24,13 @@ The application will be deployed as **two separate Railway services**:
 2. Click **"New Project"**
 3. Select **"Deploy from GitHub repo"**
 4. Authorize Railway to access your GitHub account
-5. Select your `email_search_react` repository
+5. Select your repository
 
 ### Step 2: Configure Backend Service
 
 1. Railway will detect your project and create a service
 2. Click on the service to open its settings
-3. Go to **Settings** → **Service Name** and rename it to `email-search-backend`
+3. Go to **Settings** → **Service Name** and rename it to `app-backend`
 
 ### Step 3: Set Environment Variables
 
@@ -102,7 +102,7 @@ If you prefer, you can use Railway's file upload feature:
 2. Railway should automatically detect the port from your `Procfile` (which uses `$PORT`)
 3. **If Railway asks for a port number, enter `8080`** (this is just for the UI - Railway will use its dynamic `$PORT` at runtime)
 4. Click **"Generate Domain"** to get a public URL
-5. **Copy this URL** - you'll need it for the frontend (e.g., `https://email-search-backend.railway.app`)
+5. **Copy this URL** - you'll need it for the frontend (e.g., `https://search-backend.railway.app`)
 
 > **Note**: The `Procfile` uses `$PORT` which Railway automatically assigns at runtime. Your backend code reads this via `os.getenv("PORT", 8080)`. The port number you enter in the UI (8000) is just a placeholder.
 
@@ -183,7 +183,7 @@ Update `frontend/package.json` to include:
 
 1. In your Railway project, click **"New Service"**
 2. Select **"GitHub Repo"** and choose the same repository
-3. Rename the service to `email-search-frontend`
+3. Rename the service to `search-frontend`
 
 ### Step 4: Configure Frontend Build
 
@@ -211,7 +211,7 @@ Now that you have your frontend URL, update the backend:
 
 1. Go to your **backend service** in Railway
 2. Go to **Variables**
-3. Update `FRONTEND_URL` to your frontend Railway URL (e.g., `https://email-search-frontend.railway.app`)
+3. Update `FRONTEND_URL` to your frontend Railway URL (e.g., `https://search-frontend.railway.app`)
 4. The backend will automatically redeploy
 
 ---
@@ -311,5 +311,4 @@ Each service consumes resources. Monitor your usage in the Railway dashboard.
 ## Support
 
 - **Railway Documentation**: [docs.railway.app](https://docs.railway.app)
-- **Railway Discord**: [discord.gg/railway](https://discord.gg/railway)
 - **FastAPI Documentation**: [fastapi.tiangolo.com](https://fastapi.tiangolo.com)

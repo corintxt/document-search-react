@@ -70,13 +70,13 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
                     <span className="filter-info"> ({t('documentList.filtered', { total: documents.length })})</span>
                 )}
             </div>
-            <table className="document-table">
+            <table className="document-table bookmark-table">
                 <thead>
                     <tr>
                         <th style={{ width: '40px' }}></th>
-                        <th>{t('documentList.filename')}</th>
-                        <th>{t('documentList.category')}</th>
-                        <th>{t('documentList.summary')}</th>
+                        <th style={{ width: '20%' }}>{t('documentList.filename')}</th>
+                        <th style={{ width: '10%' }}>{t('documentList.category')}</th>
+                        <th style={{ width: 'auto' }}>{t('documentList.summary')}</th>
                     </tr>
                 </thead>
                 <tbody>
