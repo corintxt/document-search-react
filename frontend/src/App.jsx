@@ -160,24 +160,34 @@ function App() {
 
       <div className="main-content">
         <nav className="nav-header">
-          <button
-            className={`nav-link ${activeView === 'search' ? 'active' : ''}`}
-            onClick={() => handleViewChange('search')}
+          <div className="nav-left">
+            <button
+              className={`nav-link ${activeView === 'search' ? 'active' : ''}`}
+              onClick={() => handleViewChange('search')}
+            >
+              {t('nav.search')}
+            </button>
+            <button
+              className={`nav-link ${activeView === 'documents' ? 'active' : ''}`}
+              onClick={() => handleViewChange('documents')}
+            >
+              {t('nav.documentList')}
+            </button>
+            <button
+              className={`nav-link ${activeView === 'bookmarks' ? 'active' : ''}`}
+              onClick={() => handleViewChange('bookmarks')}
+            >
+              {t('nav.bookmarks')} {bookmarks.length > 0 && `(${bookmarks.length})`}
+            </button>
+          </div>
+          <a 
+            href="https://email-search-frontend-production.up.railway.app/" 
+            className="nav-link nav-external"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            {t('nav.search')}
-          </button>
-          <button
-            className={`nav-link ${activeView === 'documents' ? 'active' : ''}`}
-            onClick={() => handleViewChange('documents')}
-          >
-            {t('nav.documentList')}
-          </button>
-          <button
-            className={`nav-link ${activeView === 'bookmarks' ? 'active' : ''}`}
-            onClick={() => handleViewChange('bookmarks')}
-          >
-            {t('nav.bookmarks')} {bookmarks.length > 0 && `(${bookmarks.length})`}
-          </button>
+            {t('nav.emailSearch')} →
+          </a>
         </nav>
 
         <header className="app-header">

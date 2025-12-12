@@ -9,7 +9,8 @@
   "nav": {
     "search": "Search",
     "documentList": "Document List",
-    "bookmarks": "Bookmarks"
+    "bookmarks": "Bookmarks",
+    "emailSearch": "Email Search"
   },
   "header": {
     "title": "Document Search Tool",

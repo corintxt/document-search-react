@@ -749,9 +749,15 @@ body {
 /* Navigation Header */
 .nav-header {
   display: flex;
-  gap: 0;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--border);
+}
+
+.nav-left {
+  display: flex;
+  gap: 0;
 }
 
 .nav-link {
@@ -764,6 +770,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
+  text-decoration: none;
 }
 
 .nav-link:hover {
@@ -773,6 +780,14 @@ body {
 .nav-link.active {
   color: var(--text-primary);
   border-bottom-color: var(--primary);
+}
+
+.nav-external {
+  color: var(--primary);
+}
+
+.nav-external:hover {
+  color: var(--primary-hover);
 }
 
 /* Document List Table */
