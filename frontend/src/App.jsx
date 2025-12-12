@@ -181,7 +181,7 @@ function App() {
             </button>
           </div>
           <a 
-            href="https://email-search-frontend-production.up.railway.app/" 
+            href="https://email-search-afp.up.railway.app/" 
             className="nav-link nav-external"
             target="_blank"
             rel="noopener noreferrer"
