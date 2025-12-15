@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import ReactGA from 'react-ga4';
 import Sidebar from './components/Sidebar';
 import ResultList from './components/ResultList';
 import DocumentList from './components/DocumentList';
@@ -106,6 +107,13 @@ function App() {
       };
       const response = await axios.post(`${apiUrl}/api/search`, payload);
       setResults(response.data.results);
+      
+      // Track search query with Google Analytics
+      ReactGA.event({
+        category: 'Search',
+        action: 'query',
+        label: queryRef.current,
+      });
     } catch (err) {
       console.error("Search failed", err);
       setError("Search failed: database configuration error. Please select a different dataset.");
