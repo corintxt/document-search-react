@@ -24,6 +24,7 @@
   "sidebar": {
     "searchFilters": "Filtres de recherche",
     "maxResults": "Résultats maximum",
+    "all": "Tous",
     "searchIn": "Rechercher dans",
     "allFields": "Tous les champs",
     "filename": "Nom de fichier",
@@ -35,7 +36,8 @@
     "dateRange": "Plage de dates",
     "filterByDate": "Filtrer par plage de dates",
     "displayOptions": "Options d'affichage",
-    "showSummary": "Afficher le résumé"
+    "showSummary": "Afficher le résumé",
+    "summaryDisclaimer": "Les résumés sont générés par IA et ne doivent pas être utilisés dans les dépêches AFP."
   },
   "results": {
     "found": "{{count}} résultats trouvés",

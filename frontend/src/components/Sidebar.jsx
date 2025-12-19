@@ -36,15 +36,16 @@ const Sidebar = ({ filters, setFilters, onSearch, selectedTableId }) => {
             <h2>{t('sidebar.searchFilters')}</h2>
 
             <div className="filter-group">
-                <label>{t('sidebar.maxResults')}: {filters.limit}</label>
-                <input
-                    type="range"
-                    min="50"
-                    max="1000"
-                    step="50"
-                    value={filters.limit}
-                    onChange={(e) => handleChange('limit', parseInt(e.target.value))}
-                />
+                <label>{t('sidebar.maxResults')}:</label>
+                <select
+                    value={filters.limit === null ? 'all' : filters.limit}
+                    onChange={(e) => handleChange('limit', e.target.value === 'all' ? null : parseInt(e.target.value))}
+                >
+                    {[50, 100, 200, 500, 1000].map(val => (
+                        <option key={val} value={val}>{val}</option>
+                    ))}
+                    <option value="all">{t('sidebar.all')}</option>
+                </select>
             </div>
 
             <div className="filter-group">
@@ -139,6 +140,9 @@ const Sidebar = ({ filters, setFilters, onSearch, selectedTableId }) => {
                     />
                     {t('sidebar.showSummary')}
                 </label>
+                <p style={{ fontStyle: 'italic', fontSize: '0.85em', marginTop: '0.5em', color: '#666' }}>
+                    {t('sidebar.summaryDisclaimer')}
+                </p>
             </div>
 
         </div>

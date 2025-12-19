@@ -47,7 +47,7 @@ function App() {
   };
 
   const [filters, setFilters] = useState({
-    limit: 100,
+    limit: null,
     search_type: 'All fields',
     date_from: null,
     date_to: null,

@@ -24,6 +24,7 @@
   "sidebar": {
     "searchFilters": "Search Filters",
     "maxResults": "Max results",
+    "all": "All",
     "searchIn": "Search in",
     "allFields": "All fields",
     "filename": "Filename",
@@ -35,7 +36,8 @@
     "dateRange": "Date Range",
     "filterByDate": "Filter by date range",
     "displayOptions": "Display Options",
-    "showSummary": "Show summary"
+    "showSummary": "Show summary",
+    "summaryDisclaimer": "Summaries are AI-generated and should not be used in AFP copy."
   },
   "results": {
     "found": "Found {{count}} results",

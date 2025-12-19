@@ -120,7 +120,7 @@ client = get_bigquery_client()
 # Models
 class SearchRequest(BaseModel):
     query: Optional[str] = None
-    limit: int = 100
+    limit: Optional[int] = None
     search_type: str = "All fields"
     date_from: Optional[date] = None
     date_to: Optional[date] = None
@@ -175,7 +175,7 @@ async def get_config():
     }
 
 @app.get("/api/documents")
-async def list_documents(table_id: Optional[str] = Query(None), limit: int = Query(500)):
+async def list_documents(table_id: Optional[str] = Query(None), limit: Optional[int] = Query(None)):
     """Return a list of all documents with filename, category, and summary"""
     if not client:
         raise HTTPException(status_code=500, detail="BigQuery client not initialized")
@@ -212,7 +212,7 @@ async def list_documents(table_id: Optional[str] = Query(None), limit: int = Que
         LEFT JOIN `{PROJECT_ID}.{DATASET}.{SUMMARY_TABLE}` s
         ON e.md5 = s.md5
         ORDER BY e.filename ASC
-        LIMIT @limit
+        {f'LIMIT @limit' if limit is not None else ''}
         """
     else:
         sql_query = f"""
@@ -228,11 +228,11 @@ async def list_documents(table_id: Optional[str] = Query(None), limit: int = Que
             mtime as date
         FROM `{PROJECT_ID}.{DATASET}.{TABLE}`
         ORDER BY filename ASC
-        LIMIT @limit
+        {f'LIMIT @limit' if limit is not None else ''}
         """
     
-    query_params = [bigquery.ScalarQueryParameter("limit", "INT64", limit)]
-    job_config = bigquery.QueryJobConfig(query_parameters=query_params)
+    query_params = [bigquery.ScalarQueryParameter("limit", "INT64", limit)] if limit is not None else []
+    job_config = bigquery.QueryJobConfig(query_parameters=query_params) if query_params else bigquery.QueryJobConfig()
     
     try:
         query_job = client.query(sql_query, job_config=job_config)
@@ -334,7 +334,7 @@ async def search_emails(request: SearchRequest):
         ON e.md5 = s.md5
         WHERE {where_clause}
         ORDER BY e.mtime DESC
-        LIMIT @limit
+        {f'LIMIT @limit' if request.limit is not None else ''}
         """
     else:
         sql_query = f"""
@@ -351,10 +351,11 @@ async def search_emails(request: SearchRequest):
         FROM `{PROJECT_ID}.{DATASET}.{TABLE}`
         WHERE {where_clause}
         ORDER BY mtime DESC
-        LIMIT @limit
+        {f'LIMIT @limit' if request.limit is not None else ''}
         """
     
-    query_params.append(bigquery.ScalarQueryParameter("limit", "INT64", request.limit))
+    if request.limit is not None:
+        query_params.append(bigquery.ScalarQueryParameter("limit", "INT64", request.limit))
 
     job_config = bigquery.QueryJobConfig(query_parameters=query_params)
     
