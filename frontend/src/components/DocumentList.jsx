@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 const ITEMS_PER_PAGE = 20;
 
-const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFilter, subcategoryFilter, caseFilter, onCaseClick, onClearCaseFilter, isBookmarked, onToggleBookmark }) => {
+const DocumentList = ({ documents, onSelectDocument, loading, loadingCaseDocuments, query, categoryFilter, subcategoryFilter, caseFilter, onCaseClick, onClearCaseFilter, isBookmarked, onToggleBookmark }) => {
     const { t } = useTranslation();
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -56,7 +56,9 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
     const paginatedDocuments = filteredDocuments.slice(startIndex, endIndex);
 
     if (loading) {
-        return <div className="loading-spinner">{t('results.loading')}</div>;
+        // Show case-specific loading message if loading case documents
+        const loadingMessage = loadingCaseDocuments ? t('documentList.loadingCase') : t('results.loading');
+        return <div className="loading-spinner">{loadingMessage}</div>;
     }
 
     if (!documents || documents.length === 0) {

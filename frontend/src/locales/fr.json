@@ -69,7 +69,8 @@
     "filename": "Nom de fichier",
     "category": "Catégorie",
     "subcategory": "Sous-catégorie",
-    "summary": "Résumé"
+    "summary": "Résumé",
+    "loadingCase": "📂 Récupération des documents de l'affaire..."
   },
   "bookmarks": {
     "title": "Documents signets",

@@ -26,6 +26,8 @@ function App() {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [bookmarks, setBookmarks] = useState([]); // Array of bookmarked documents
   const [caseFilter, setCaseFilter] = useState(null); // Filter documents by case
+  const [loadingCaseDocuments, setLoadingCaseDocuments] = useState(false); // Track when loading case documents
+
 
   // Bookmark functions
   const toggleBookmark = (document) => {
@@ -148,6 +150,7 @@ function App() {
       setDocuments([]);
     } finally {
       setLoading(false);
+      setLoadingCaseDocuments(false); // Reset case loading flag
     }
   }, []);
 
@@ -164,10 +167,11 @@ function App() {
 
   const handleCaseClick = (caseName) => {
     setCaseFilter(caseName);
+    setQuery(''); // Clear search query to avoid interference with case filter
     setActiveView('documents');
-    if (documents.length === 0) {
-      fetchDocuments();
-    }
+    setLoadingCaseDocuments(true); // Set flag to show case-specific loading message
+    // Always fetch documents to ensure we have the latest data
+    fetchDocuments();
   };
 
   // Show password screen if not authenticated (skip in dev mode)
@@ -299,6 +303,7 @@ function App() {
             documents={documents}
             onSelectDocument={handleSelectDocument}
             loading={loading}
+            loadingCaseDocuments={loadingCaseDocuments}
             query={query}
             categoryFilter={filters.category_filter}
             subcategoryFilter={filters.subcategory_filter}

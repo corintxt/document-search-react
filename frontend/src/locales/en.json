@@ -69,7 +69,8 @@
     "filename": "Filename",
     "category": "Category",
     "subcategory": "Subcategory",
-    "summary": "Summary"
+    "summary": "Summary",
+    "loadingCase": "📂 Fetching case documents..."
   },
   "bookmarks": {
     "title": "Bookmarked Documents",
