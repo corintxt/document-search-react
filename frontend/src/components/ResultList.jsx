@@ -4,10 +4,10 @@ import ResultItem from './ResultItem';
 
 const ITEMS_PER_PAGE = 20;
 
-const ResultList = ({ results, query, showSummary, isBookmarked, onToggleBookmark }) => {
+const ResultList = ({ results, query, showSummary, isBookmarked, onToggleBookmark, onCaseClick }) => {
     const { t } = useTranslation();
     const [currentPage, setCurrentPage] = useState(1);
-    
+
     if (!results || results.length === 0) {
         return <div className="no-results">{t('results.noResults')}</div>;
     }
@@ -78,14 +78,14 @@ const ResultList = ({ results, query, showSummary, isBookmarked, onToggleBookmar
 
             {totalPages > 1 && (
                 <div className="pagination">
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(1)}
                         disabled={currentPage === 1}
                     >
                         «
                     </button>
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
@@ -95,14 +95,14 @@ const ResultList = ({ results, query, showSummary, isBookmarked, onToggleBookmar
                     <span className="pagination-info">
                         {t('documentList.page', { current: currentPage, total: totalPages })}
                     </span>
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                         disabled={currentPage === totalPages}
                     >
                         ›
                     </button>
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(totalPages)}
                         disabled={currentPage === totalPages}
@@ -115,26 +115,27 @@ const ResultList = ({ results, query, showSummary, isBookmarked, onToggleBookmar
             <hr />
 
             {paginatedResults.map((result, idx) => (
-                <ResultItem 
-                    key={startIndex + idx} 
-                    result={result} 
-                    query={query} 
+                <ResultItem
+                    key={startIndex + idx}
+                    result={result}
+                    query={query}
                     showSummary={showSummary}
                     isBookmarked={isBookmarked}
                     onToggleBookmark={onToggleBookmark}
+                    onCaseClick={onCaseClick}
                 />
             ))}
 
             {totalPages > 1 && (
                 <div className="pagination">
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(1)}
                         disabled={currentPage === 1}
                     >
                         «
                     </button>
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
@@ -144,14 +145,14 @@ const ResultList = ({ results, query, showSummary, isBookmarked, onToggleBookmar
                     <span className="pagination-info">
                         {t('documentList.page', { current: currentPage, total: totalPages })}
                     </span>
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                         disabled={currentPage === totalPages}
                     >
                         ›
                     </button>
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(totalPages)}
                         disabled={currentPage === totalPages}

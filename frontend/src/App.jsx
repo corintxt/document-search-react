@@ -25,6 +25,7 @@ function App() {
   const [activeView, setActiveView] = useState('search'); // 'search', 'documents', or 'bookmarks'
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [bookmarks, setBookmarks] = useState([]); // Array of bookmarked documents
+  const [caseFilter, setCaseFilter] = useState(null); // Filter documents by case
 
   // Bookmark functions
   const toggleBookmark = (document) => {
@@ -107,7 +108,7 @@ function App() {
       };
       const response = await axios.post(`${apiUrl}/api/search`, payload);
       setResults(response.data.results);
-      
+
       // Track search query with Google Analytics
       ReactGA.event({
         category: 'Search',
@@ -151,6 +152,14 @@ function App() {
     setSelectedDocument(doc);
   };
 
+  const handleCaseClick = (caseName) => {
+    setCaseFilter(caseName);
+    setActiveView('documents');
+    if (documents.length === 0) {
+      fetchDocuments();
+    }
+  };
+
   // Show password screen if not authenticated (skip in dev mode)
   const isDev = import.meta.env.DEV;
   if (!isDev && !isAuthenticated) {
@@ -188,8 +197,8 @@ function App() {
               {t('nav.bookmarks')} {bookmarks.length > 0 && `(${bookmarks.length})`}
             </button>
           </div>
-          <a 
-            href="https://email-search-afp.up.railway.app/" 
+          <a
+            href="https://email-search-afp.up.railway.app/"
             className="nav-link nav-external"
             target="_blank"
             rel="noopener noreferrer"
@@ -227,14 +236,14 @@ function App() {
               )}
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button 
-                onClick={() => i18n.changeLanguage('en')} 
+              <button
+                onClick={() => i18n.changeLanguage('en')}
                 className={`lang-btn ${i18n.language === 'en' ? 'active' : ''}`}
               >
                 EN
               </button>
-              <button 
-                onClick={() => i18n.changeLanguage('fr')} 
+              <button
+                onClick={() => i18n.changeLanguage('fr')}
                 className={`lang-btn ${i18n.language === 'fr' ? 'active' : ''}`}
               >
                 FR
@@ -265,23 +274,27 @@ function App() {
             ) : error ? (
               <div className="error-message">{error}</div>
             ) : (
-              <ResultList 
-                results={results} 
-                query={query} 
+              <ResultList
+                results={results}
+                query={query}
                 showSummary={filters.show_summaries}
                 isBookmarked={isBookmarked}
                 onToggleBookmark={toggleBookmark}
+                onCaseClick={handleCaseClick}
               />
             )}
           </>
         ) : activeView === 'documents' ? (
-          <DocumentList 
-            documents={documents} 
+          <DocumentList
+            documents={documents}
             onSelectDocument={handleSelectDocument}
             loading={loading}
             query={query}
             categoryFilter={filters.category_filter}
             subcategoryFilter={filters.subcategory_filter}
+            caseFilter={caseFilter}
+            onCaseClick={handleCaseClick}
+            onClearCaseFilter={() => setCaseFilter(null)}
             isBookmarked={isBookmarked}
             onToggleBookmark={toggleBookmark}
           />
@@ -290,16 +303,18 @@ function App() {
             bookmarks={bookmarks}
             onSelectDocument={handleSelectDocument}
             onRemoveBookmark={removeBookmark}
+            onCaseClick={handleCaseClick}
           />
         )}
       </div>
 
       {selectedDocument && (
-        <DocumentPanel 
-          document={selectedDocument} 
+        <DocumentPanel
+          document={selectedDocument}
           onClose={() => setSelectedDocument(null)}
           isBookmarked={isBookmarked(selectedDocument.md5)}
           onToggleBookmark={toggleBookmark}
+          onCaseClick={handleCaseClick}
         />
       )}
     </div>

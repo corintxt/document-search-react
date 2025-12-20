@@ -91,7 +91,7 @@ const Highlight = ({ text, query }) => {
     );
 };
 
-const ResultItem = ({ result, query, showSummary, isBookmarked, onToggleBookmark }) => {
+const ResultItem = ({ result, query, showSummary, isBookmarked, onToggleBookmark, onCaseClick }) => {
     const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
     const bookmarked = isBookmarked ? isBookmarked(result.md5) : false;
@@ -119,7 +119,17 @@ const ResultItem = ({ result, query, showSummary, isBookmarked, onToggleBookmark
                         {bookmarked ? '★' : '☆'}
                     </button>
                     <h5>
-                        {result.case && <><Highlight text={result.case} query={query} /> - </>}
+                        {result.case && (
+                            <>
+                                <button
+                                    className="case-link"
+                                    onClick={() => onCaseClick(result.case)}
+                                >
+                                    <Highlight text={result.case} query={query} />
+                                </button>
+                                {' - '}
+                            </>
+                        )}
                         <Highlight text={result.filename} query={query} />
                     </h5>
                 </div>

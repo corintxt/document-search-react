@@ -84,7 +84,7 @@ const Highlight = ({ text, query }) => {
     );
 };
 
-const DocumentPanel = ({ document, onClose, isBookmarked, onToggleBookmark }) => {
+const DocumentPanel = ({ document, onClose, isBookmarked, onToggleBookmark, onCaseClick }) => {
     const { t } = useTranslation();
     const [expanded, setExpanded] = useState(false);
 
@@ -114,7 +114,18 @@ const DocumentPanel = ({ document, onClose, isBookmarked, onToggleBookmark }) =>
                         </button>
                         <div className="document-title-info">
                             {document.case && (
-                                <div className="document-case"><strong>{t('results.case')}:</strong> {document.case}</div>
+                                <div className="document-case">
+                                    <strong>{t('results.case')}:</strong>{' '}
+                                    <button
+                                        className="case-link"
+                                        onClick={() => {
+                                            onCaseClick(document.case);
+                                            onClose();
+                                        }}
+                                    >
+                                        {document.case}
+                                    </button>
+                                </div>
                             )}
                             <h3><strong>{t('results.document')}:</strong> {document.filename}</h3>
                         </div>

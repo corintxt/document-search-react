@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-const BookmarkList = ({ bookmarks, onSelectDocument, onRemoveBookmark }) => {
+const BookmarkList = ({ bookmarks, onSelectDocument, onRemoveBookmark, onCaseClick }) => {
     const { t } = useTranslation();
 
     const handleExport = () => {
@@ -74,7 +74,20 @@ const BookmarkList = ({ bookmarks, onSelectDocument, onRemoveBookmark }) => {
                                     className="filename-link"
                                     onClick={() => onSelectDocument(doc)}
                                 >
-                                    {doc.case && <><strong>{doc.case}</strong> - </>}
+                                    {doc.case && (
+                                        <>
+                                            <button
+                                                className="case-link"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onCaseClick(doc.case);
+                                                }}
+                                            >
+                                                {doc.case}
+                                            </button>
+                                            {' - '}
+                                        </>
+                                    )}
                                     {doc.filename}
                                 </button>
                             </td>

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 const ITEMS_PER_PAGE = 20;
 
-const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFilter, subcategoryFilter, isBookmarked, onToggleBookmark }) => {
+const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFilter, subcategoryFilter, caseFilter, onCaseClick, onClearCaseFilter, isBookmarked, onToggleBookmark }) => {
     const { t } = useTranslation();
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -22,6 +22,11 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
                 return false;
             }
 
+            // Case filter
+            if (caseFilter && doc.case !== caseFilter) {
+                return false;
+            }
+
             // Search query filter (search in filename, text, and summary)
             if (query && query.trim()) {
                 const searchTerms = query.toLowerCase().split(' ').filter(t => t.length > 0);
@@ -37,12 +42,12 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
 
             return true;
         });
-    }, [documents, query, categoryFilter, subcategoryFilter]);
+    }, [documents, query, categoryFilter, subcategoryFilter, caseFilter]);
 
     // Reset to page 1 when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [query, categoryFilter, subcategoryFilter]);
+    }, [query, categoryFilter, subcategoryFilter, caseFilter]);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE);
@@ -66,8 +71,13 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
         <div className="document-list">
             <div className="document-list-header">
                 <span>{t('documentList.totalDocuments', { count: filteredDocuments.length })}</span>
-                {(query || categoryFilter || subcategoryFilter) && filteredDocuments.length !== documents.length && (
+                {(query || categoryFilter || subcategoryFilter || caseFilter) && filteredDocuments.length !== documents.length && (
                     <span className="filter-info"> ({t('documentList.filtered', { total: documents.length })})</span>
+                )}
+                {caseFilter && (
+                    <button className="clear-filter-btn" onClick={onClearCaseFilter}>
+                        Case: {caseFilter} ✕
+                    </button>
                 )}
             </div>
             <table className="document-table bookmark-table">
@@ -99,7 +109,20 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
                                         className="filename-link"
                                         onClick={() => onSelectDocument(doc)}
                                     >
-                                        {doc.case && <><strong>{doc.case}</strong> - </>}
+                                        {doc.case && (
+                                            <>
+                                                <button
+                                                    className="case-link"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onCaseClick(doc.case);
+                                                    }}
+                                                >
+                                                    {doc.case}
+                                                </button>
+                                                {' - '}
+                                            </>
+                                        )}
                                         {doc.filename}
                                     </button>
                                 </td>
