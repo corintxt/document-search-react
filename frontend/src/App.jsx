@@ -51,7 +51,7 @@ function App() {
 
   const [filters, setFilters] = useState({
     limit: null,
-    search_type: 'All fields',
+    search_type: 'Text',
     date_from: null,
     date_to: null,
     show_summaries: false,

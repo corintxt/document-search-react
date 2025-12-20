@@ -121,7 +121,7 @@ client = get_bigquery_client()
 class SearchRequest(BaseModel):
     query: Optional[str] = None
     limit: Optional[int] = None
-    search_type: str = "All fields"
+    search_type: str = "Text"
     date_from: Optional[date] = None
     date_to: Optional[date] = None
     show_summaries: bool = False
@@ -292,8 +292,15 @@ async def search_emails(request: SearchRequest):
             elif request.search_type == "Text":
                 # Search only in text field
                 field_conditions = f"SEARCH({table_prefix}text, @keyword_{i})"
+            elif request.search_type == "Summary":
+                # Search only in summary field (requires summary table join)
+                if needs_summary_join:
+                    field_conditions = f"SEARCH(s.summary, @keyword_{i})"
+                else:
+                    # If summary table not available, fall back to text search
+                    field_conditions = f"SEARCH({table_prefix}text, @keyword_{i})"
             else:
-                # Search across all fields
+                # Default: search across case, filename, and text fields
                 searches = [
                     f"SEARCH({table_prefix}case, @keyword_{i})",
                     f"SEARCH({table_prefix}filename, @keyword_{i})",
