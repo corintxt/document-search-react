@@ -234,7 +234,10 @@ async def list_documents(table_id: Optional[str] = Query(None), limit: Optional[
         """
     
     query_params = [bigquery.ScalarQueryParameter("limit", "INT64", limit)] if limit is not None else []
-    job_config = bigquery.QueryJobConfig(query_parameters=query_params) if query_params else bigquery.QueryJobConfig()
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=query_params,
+        use_query_cache=True  # Enable 24-hour query result caching
+    ) if query_params else bigquery.QueryJobConfig(use_query_cache=True)
     
     try:
         query_job = client.query(sql_query, job_config=job_config)
@@ -277,23 +280,29 @@ async def search_emails(request: SearchRequest):
     needs_summary_join = summary_table_available
     table_prefix = "e." if needs_summary_join else ""
 
-    # Keyword search
+    # Keyword search - Using SEARCH function for better performance
     if request.query:
-        if request.search_type == "Case":
-            search_fields = [f"{table_prefix}case"]
-        elif request.search_type == "Text":
-            search_fields = [f"{table_prefix}text"]
-        else:
-            search_fields = [f"{table_prefix}case", f"{table_prefix}filename", f"{table_prefix}text"]
-        
         keywords = request.query.split()
         keyword_conditions = []
+        
         for i, keyword in enumerate(keywords):
-            field_conditions = " OR ".join([
-                f"LOWER({field}) LIKE LOWER(@keyword_{i})" for field in search_fields
-            ])
-            keyword_conditions.append(f"({field_conditions})")
-            query_params.append(bigquery.ScalarQueryParameter(f"keyword_{i}", "STRING", f"%{keyword}%"))
+            if request.search_type == "Case":
+                # Search only in case field
+                field_conditions = f"SEARCH({table_prefix}case, @keyword_{i})"
+            elif request.search_type == "Text":
+                # Search only in text field
+                field_conditions = f"SEARCH({table_prefix}text, @keyword_{i})"
+            else:
+                # Search across all fields
+                searches = [
+                    f"SEARCH({table_prefix}case, @keyword_{i})",
+                    f"SEARCH({table_prefix}filename, @keyword_{i})",
+                    f"SEARCH({table_prefix}text, @keyword_{i})"
+                ]
+                field_conditions = f"({' OR '.join(searches)})"
+            
+            keyword_conditions.append(field_conditions)
+            query_params.append(bigquery.ScalarQueryParameter(f"keyword_{i}", "STRING", keyword))
         
         where_conditions.append(" AND ".join(keyword_conditions))
 
@@ -361,7 +370,10 @@ async def search_emails(request: SearchRequest):
     if request.limit is not None:
         query_params.append(bigquery.ScalarQueryParameter("limit", "INT64", request.limit))
 
-    job_config = bigquery.QueryJobConfig(query_parameters=query_params)
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=query_params,
+        use_query_cache=True  # Enable 24-hour query result caching
+    )
     
     try:
         query_job = client.query(sql_query, job_config=job_config)
