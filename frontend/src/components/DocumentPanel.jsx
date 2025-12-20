@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 // Component to render a URL as a hoverable [link]
 const LinkifiedUrl = ({ url }) => {
     const cleanUrl = url.replace(/^<|>$/g, '').trim();
-    
+
     return (
-        <a 
-            href={cleanUrl} 
-            target="_blank" 
+        <a
+            href={cleanUrl}
+            target="_blank"
             rel="noopener noreferrer"
             className="inline-link"
             title={cleanUrl}
@@ -21,13 +21,13 @@ const LinkifiedUrl = ({ url }) => {
 // Process text to convert URLs to clickable [link] elements
 const processTextWithLinks = (text) => {
     if (!text) return [];
-    
+
     const urlRegex = /(<https?:\/\/[^\s>]+>|https?:\/\/[^\s<>]+)/g;
-    
+
     const parts = [];
     let lastIndex = 0;
     let match;
-    
+
     while ((match = urlRegex.exec(text)) !== null) {
         if (match.index > lastIndex) {
             parts.push({ type: 'text', content: text.slice(lastIndex, match.index) });
@@ -35,48 +35,48 @@ const processTextWithLinks = (text) => {
         parts.push({ type: 'url', content: match[0] });
         lastIndex = match.index + match[0].length;
     }
-    
+
     if (lastIndex < text.length) {
         parts.push({ type: 'text', content: text.slice(lastIndex) });
     }
-    
+
     return parts;
 };
 
 const Highlight = ({ text, query }) => {
     if (!text) return <span>{text}</span>;
-    
+
     const partsWithUrls = processTextWithLinks(text);
-    
+
     if (!query) {
         return (
             <span>
-                {partsWithUrls.map((part, i) => 
-                    part.type === 'url' 
+                {partsWithUrls.map((part, i) =>
+                    part.type === 'url'
                         ? <LinkifiedUrl key={i} url={part.content} />
                         : <span key={i}>{part.content}</span>
                 )}
             </span>
         );
     }
-    
+
     const highlightText = (str) => {
         const queryTerms = query.split(' ').filter(q => q.length > 0);
         const regex = new RegExp(`(${queryTerms.map(q => q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
         const parts = str.split(regex);
-        
+
         return parts.map((part, i) => {
             const isMatch = queryTerms.some(q => q.toLowerCase() === part.toLowerCase());
-            return isMatch 
-                ? <span key={i} className="highlight">{part}</span> 
+            return isMatch
+                ? <span key={i} className="highlight">{part}</span>
                 : <span key={i}>{part}</span>;
         });
     };
-    
+
     return (
         <span>
-            {partsWithUrls.map((part, i) => 
-                part.type === 'url' 
+            {partsWithUrls.map((part, i) =>
+                part.type === 'url'
                     ? <LinkifiedUrl key={i} url={part.content} />
                     : <span key={i}>{highlightText(part.content)}</span>
             )}
@@ -100,24 +100,12 @@ const DocumentPanel = ({ document, onClose, isBookmarked, onToggleBookmark }) =>
         }
     };
 
-    // Extract case name from path (everything before the last /)
-    const getCaseName = (path) => {
-        if (!path) return null;
-        const lastSlashIndex = path.lastIndexOf('/');
-        if (lastSlashIndex > 0) {
-            return path.substring(0, lastSlashIndex);
-        }
-        return null;
-    };
-
-    const caseName = getCaseName(document.path);
-
     return (
         <div className="document-panel-overlay" onClick={onClose}>
             <div className="document-panel" onClick={(e) => e.stopPropagation()}>
                 <div className="document-panel-header">
                     <div className="document-panel-title">
-                        <button 
+                        <button
                             className={`bookmark-btn large ${isBookmarked ? 'bookmarked' : ''}`}
                             onClick={() => onToggleBookmark && onToggleBookmark(document)}
                             title={isBookmarked ? t('bookmarks.remove') : t('bookmarks.add')}
@@ -125,15 +113,15 @@ const DocumentPanel = ({ document, onClose, isBookmarked, onToggleBookmark }) =>
                             {isBookmarked ? '★' : '☆'}
                         </button>
                         <div className="document-title-info">
-                            {caseName && (
-                                <div className="document-case"><strong>{t('results.case')}:</strong> {caseName}</div>
+                            {document.case && (
+                                <div className="document-case"><strong>{t('results.case')}:</strong> {document.case}</div>
                             )}
                             <h3><strong>{t('results.document')}:</strong> {document.filename}</h3>
                         </div>
                     </div>
                     <button className="close-btn" onClick={onClose}>×</button>
                 </div>
-                
+
                 <div className="document-panel-content">
                     <div className="result-meta">
                         <div><strong>{t('results.date')}:</strong> {formatDate(document.date)}</div>

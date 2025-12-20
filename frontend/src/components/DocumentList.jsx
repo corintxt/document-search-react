@@ -10,18 +10,18 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
     // Filter documents based on query and category
     const filteredDocuments = useMemo(() => {
         if (!documents) return [];
-        
+
         return documents.filter(doc => {
             // Category filter
             if (categoryFilter && doc.category !== categoryFilter) {
                 return false;
             }
-            
+
             // Subcategory filter
             if (subcategoryFilter && doc.subcategory !== subcategoryFilter) {
                 return false;
             }
-            
+
             // Search query filter (search in filename, text, and summary)
             if (query && query.trim()) {
                 const searchTerms = query.toLowerCase().split(' ').filter(t => t.length > 0);
@@ -30,11 +30,11 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
                     doc.text || '',
                     doc.summary || ''
                 ].join(' ').toLowerCase();
-                
+
                 // All terms must match
                 return searchTerms.every(term => searchableText.includes(term));
             }
-            
+
             return true;
         });
     }, [documents, query, categoryFilter, subcategoryFilter]);
@@ -86,7 +86,7 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
                         return (
                             <tr key={doc.md5 || idx}>
                                 <td>
-                                    <button 
+                                    <button
                                         className={`bookmark-btn ${bookmarked ? 'bookmarked' : ''}`}
                                         onClick={() => onToggleBookmark && onToggleBookmark(doc)}
                                         title={bookmarked ? t('bookmarks.remove') : t('bookmarks.add')}
@@ -95,10 +95,11 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
                                     </button>
                                 </td>
                                 <td>
-                                    <button 
+                                    <button
                                         className="filename-link"
                                         onClick={() => onSelectDocument(doc)}
                                     >
+                                        {doc.case && <><strong>{doc.case}</strong> - </>}
                                         {doc.filename}
                                     </button>
                                 </td>
@@ -127,14 +128,14 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
 
             {totalPages > 1 && (
                 <div className="pagination">
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(1)}
                         disabled={currentPage === 1}
                     >
                         «
                     </button>
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
@@ -144,14 +145,14 @@ const DocumentList = ({ documents, onSelectDocument, loading, query, categoryFil
                     <span className="pagination-info">
                         {t('documentList.page', { current: currentPage, total: totalPages })}
                     </span>
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                         disabled={currentPage === totalPages}
                     >
                         ›
                     </button>
-                    <button 
+                    <button
                         className="pagination-btn"
                         onClick={() => setCurrentPage(totalPages)}
                         disabled={currentPage === totalPages}

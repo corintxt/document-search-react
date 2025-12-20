@@ -61,7 +61,7 @@ const BookmarkList = ({ bookmarks, onSelectDocument, onRemoveBookmark }) => {
                     {bookmarks.map((doc) => (
                         <tr key={doc.md5}>
                             <td>
-                                <button 
+                                <button
                                     className="bookmark-btn bookmarked"
                                     onClick={() => onRemoveBookmark(doc.md5)}
                                     title={t('bookmarks.remove')}
@@ -70,10 +70,11 @@ const BookmarkList = ({ bookmarks, onSelectDocument, onRemoveBookmark }) => {
                                 </button>
                             </td>
                             <td>
-                                <button 
+                                <button
                                     className="filename-link"
                                     onClick={() => onSelectDocument(doc)}
                                 >
+                                    {doc.case && <><strong>{doc.case}</strong> - </>}
                                     {doc.filename}
                                 </button>
                             </td>
