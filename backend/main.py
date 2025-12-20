@@ -279,12 +279,12 @@ async def search_emails(request: SearchRequest):
 
     # Keyword search
     if request.query:
-        if request.search_type == "Filename":
-            search_fields = [f"{table_prefix}filename"]
+        if request.search_type == "Case":
+            search_fields = [f"{table_prefix}case"]
         elif request.search_type == "Text":
             search_fields = [f"{table_prefix}text"]
         else:
-            search_fields = [f"{table_prefix}filename", f"{table_prefix}text"]
+            search_fields = [f"{table_prefix}case", f"{table_prefix}filename", f"{table_prefix}text"]
         
         keywords = request.query.split()
         keyword_conditions = []

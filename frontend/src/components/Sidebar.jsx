@@ -53,7 +53,7 @@ const Sidebar = ({ filters, setFilters, onSearch, selectedTableId }) => {
                 <div className="radio-group">
                     {[
                         { value: 'All fields', label: t('sidebar.allFields') },
-                        { value: 'Filename', label: t('sidebar.filename') },
+                        { value: 'Case', label: t('sidebar.case') },
                         { value: 'Text', label: t('sidebar.text') }
                     ].map(type => (
                         <label key={type.value}>

@@ -129,8 +129,18 @@ function App() {
     setError(null);
     try {
       const apiUrl = import.meta.env.VITE_API_URL || '';
-      const params = selectedTableIdRef.current ? `?table_id=${selectedTableIdRef.current}` : '';
-      const response = await axios.get(`${apiUrl}/api/documents${params}`);
+      const params = new URLSearchParams();
+
+      if (selectedTableIdRef.current) {
+        params.append('table_id', selectedTableIdRef.current);
+      }
+
+      if (filtersRef.current.limit) {
+        params.append('limit', filtersRef.current.limit);
+      }
+
+      const queryString = params.toString();
+      const response = await axios.get(`${apiUrl}/api/documents${queryString ? `?${queryString}` : ''}`);
       setDocuments(response.data.documents);
     } catch (err) {
       console.error("Failed to fetch documents", err);
