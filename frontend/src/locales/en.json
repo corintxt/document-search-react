@@ -51,6 +51,8 @@
     "pages": "Pages",
     "size": "Size",
     "path": "Path",
+    "case": "Case",
+    "document": "Document",
     "snippet": "Snippet",
     "text": "Text",
     "viewFull": "🔗 View Full",
@@ -65,6 +67,7 @@
     "page": "Page {{current}} of {{total}}",
     "filename": "Filename",
     "category": "Category",
+    "subcategory": "Subcategory",
     "summary": "Summary"
   },
   "bookmarks": {

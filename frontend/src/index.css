@@ -871,6 +871,13 @@ body {
 .category-badge.compact {
   font-size: 0.6875rem;
   padding: 0.125rem 0.375rem;
+  margin-bottom: 0.25rem;
+}
+
+.category-badge.compact.subcategory {
+  background-color: #e8f4ea;
+  color: #1a5928;
+  border-color: #a3d9b1;
 }
 
 .summary-cell {
@@ -920,13 +927,36 @@ body {
   background: var(--bg-secondary);
 }
 
+.document-panel-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.document-title-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.document-case {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  word-break: break-word;
+}
+
 .document-panel-header h3 {
   margin: 0;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--text-primary);
   word-break: break-word;
   padding-right: 1rem;
+}
+
+.document-panel-header h3 strong {
+  font-weight: 700;
 }
 
 .close-btn {

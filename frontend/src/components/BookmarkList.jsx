@@ -51,8 +51,9 @@ const BookmarkList = ({ bookmarks, onSelectDocument, onRemoveBookmark }) => {
                 <thead>
                     <tr>
                         <th style={{ width: '40px' }}></th>
-                        <th style={{ width: '25%' }}>{t('documentList.filename')}</th>
-                        <th style={{ width: '12%' }}>{t('documentList.category')}</th>
+                        <th style={{ width: '18%' }}>{t('documentList.filename')}</th>
+                        <th style={{ width: '20%' }}>{t('documentList.category')}</th>
+                        <th style={{ width: '20%' }}>{t('documentList.subcategory')}</th>
                         <th style={{ width: 'auto' }}>{t('documentList.summary')}</th>
                     </tr>
                 </thead>
@@ -79,6 +80,11 @@ const BookmarkList = ({ bookmarks, onSelectDocument, onRemoveBookmark }) => {
                             <td>
                                 {doc.category && (
                                     <span className="category-badge compact">{doc.category}</span>
+                                )}
+                            </td>
+                            <td>
+                                {doc.subcategory && (
+                                    <span className="category-badge compact subcategory">{doc.subcategory}</span>
                                 )}
                             </td>
                             <td className="summary-cell">

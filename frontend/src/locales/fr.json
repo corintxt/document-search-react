@@ -51,6 +51,8 @@
     "pages": "Pages",
     "size": "Taille",
     "path": "Chemin",
+    "case": "Affaire",
+    "document": "Document",
     "snippet": "Extrait",
     "text": "Texte",
     "viewFull": "🔗 Voir complet",
@@ -65,6 +67,7 @@
     "page": "Page {{current}} sur {{total}}",
     "filename": "Nom de fichier",
     "category": "Catégorie",
+    "subcategory": "Sous-catégorie",
     "summary": "Résumé"
   },
   "bookmarks": {

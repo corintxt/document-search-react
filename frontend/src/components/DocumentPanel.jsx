@@ -100,6 +100,18 @@ const DocumentPanel = ({ document, onClose, isBookmarked, onToggleBookmark }) =>
         }
     };
 
+    // Extract case name from path (everything before the last /)
+    const getCaseName = (path) => {
+        if (!path) return null;
+        const lastSlashIndex = path.lastIndexOf('/');
+        if (lastSlashIndex > 0) {
+            return path.substring(0, lastSlashIndex);
+        }
+        return null;
+    };
+
+    const caseName = getCaseName(document.path);
+
     return (
         <div className="document-panel-overlay" onClick={onClose}>
             <div className="document-panel" onClick={(e) => e.stopPropagation()}>
@@ -112,7 +124,12 @@ const DocumentPanel = ({ document, onClose, isBookmarked, onToggleBookmark }) =>
                         >
                             {isBookmarked ? '★' : '☆'}
                         </button>
-                        <h3>{document.filename}</h3>
+                        <div className="document-title-info">
+                            {caseName && (
+                                <div className="document-case"><strong>{t('results.case')}:</strong> {caseName}</div>
+                            )}
+                            <h3><strong>{t('results.document')}:</strong> {document.filename}</h3>
+                        </div>
                     </div>
                     <button className="close-btn" onClick={onClose}>×</button>
                 </div>
