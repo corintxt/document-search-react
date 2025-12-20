@@ -7,6 +7,7 @@ import ResultList from './components/ResultList';
 import DocumentList from './components/DocumentList';
 import DocumentPanel from './components/DocumentPanel';
 import BookmarkList from './components/BookmarkList';
+import CaseList from './components/CaseList';
 import PasswordScreen from './components/PasswordScreen';
 import './index.css';
 
@@ -22,9 +23,10 @@ function App() {
   const [query, setQuery] = useState('');
   const [datasetInfo, setDatasetInfo] = useState(null);
   const [selectedTableId, setSelectedTableId] = useState(null);
-  const [activeView, setActiveView] = useState('search'); // 'search', 'documents', or 'bookmarks'
+  const [activeView, setActiveView] = useState('search'); // 'search', 'cases', 'documents', or 'bookmarks'
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [bookmarks, setBookmarks] = useState([]); // Array of bookmarked documents
+  const [cases, setCases] = useState([]); // Array of unique cases
   const [caseFilter, setCaseFilter] = useState(null); // Filter documents by case
   const [loadingCaseDocuments, setLoadingCaseDocuments] = useState(false); // Track when loading case documents
 
@@ -154,10 +156,32 @@ function App() {
     }
   }, []);
 
+  const fetchCases = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      const params = selectedTableIdRef.current
+        ? `?table_id=${selectedTableIdRef.current}`
+        : '';
+      const response = await axios.get(`${apiUrl}/api/cases${params}`);
+      setCases(response.data.cases);
+    } catch (err) {
+      console.error("Failed to fetch cases", err);
+      setError("Failed to load case list.");
+      setCases([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const handleViewChange = (view) => {
     setActiveView(view);
     if (view === 'documents' && documents.length === 0) {
       fetchDocuments();
+    }
+    if (view === 'cases' && cases.length === 0) {
+      fetchCases();
     }
   };
 
@@ -197,6 +221,12 @@ function App() {
               onClick={() => handleViewChange('search')}
             >
               {t('nav.search')}
+            </button>
+            <button
+              className={`nav-link ${activeView === 'cases' ? 'active' : ''}`}
+              onClick={() => handleViewChange('cases')}
+            >
+              {t('nav.caseList')}
             </button>
             <button
               className={`nav-link ${activeView === 'documents' ? 'active' : ''}`}
@@ -298,6 +328,12 @@ function App() {
               />
             )}
           </>
+        ) : activeView === 'cases' ? (
+          <CaseList
+            cases={cases}
+            onCaseClick={handleCaseClick}
+            loading={loading}
+          />
         ) : activeView === 'documents' ? (
           <DocumentList
             documents={documents}

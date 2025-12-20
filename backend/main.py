@@ -174,6 +174,41 @@ async def get_config():
         "tables": DATASET_TABLES
     }
 
+@app.get("/api/cases")
+async def get_cases(table_id: Optional[str] = Query(None)):
+    """Return a list of all unique cases with document counts"""
+    if not client:
+        raise HTTPException(status_code=500, detail="BigQuery client not initialized")
+    
+    TABLE, SUMMARY_TABLE = get_table_config(table_id)
+    
+    if not TABLE:
+        raise HTTPException(status_code=400, detail="No table configured")
+    
+    sql_query = f"""
+    SELECT 
+        `case`,
+        COUNT(*) as document_count
+    FROM `{PROJECT_ID}.{DATASET}.{TABLE}`
+    WHERE `case` IS NOT NULL
+    GROUP BY `case`
+    ORDER BY `case` ASC
+    """
+    
+    job_config = bigquery.QueryJobConfig(use_query_cache=True)
+    
+    try:
+        query_job = client.query(sql_query, job_config=job_config)
+        cases = []
+        for row in query_job:
+            cases.append({
+                "case": row.case,
+                "document_count": row.document_count
+            })
+        return {"cases": cases}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/api/documents")
 async def list_documents(table_id: Optional[str] = Query(None), limit: Optional[int] = Query(None)):
     """Return a list of all documents with filename, category, and summary"""

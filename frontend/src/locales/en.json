@@ -8,6 +8,7 @@
   },
   "nav": {
     "search": "Search",
+    "caseList": "Case List",
     "documentList": "Document List",
     "bookmarks": "Bookmarks",
     "emailSearch": "Email Search"
@@ -80,5 +81,11 @@
     "add": "Add bookmark",
     "remove": "Remove bookmark",
     "export": "Export Bookmarks"
+  },
+  "caseList": {
+    "title": "All Cases",
+    "noCases": "No cases found.",
+    "documents": "{{count}} documents",
+    "loading": "📂 Loading cases..."
   }
 }

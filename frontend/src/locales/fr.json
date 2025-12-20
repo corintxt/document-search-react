@@ -8,6 +8,7 @@
   },
   "nav": {
     "search": "Recherche",
+    "caseList": "Liste des affaires",
     "documentList": "Liste des documents",
     "bookmarks": "Signets",
     "emailSearch": "Recherche d'e-mails"
@@ -80,5 +81,11 @@
     "add": "Ajouter aux signets",
     "remove": "Retirer des signets",
     "export": "Exporter les signets"
+  },
+  "caseList": {
+    "title": "Toutes les affaires",
+    "noCases": "Aucune affaire trouvée.",
+    "documents": "{{count}} documents",
+    "loading": "📂 Chargement des affaires..."
   }
 }
